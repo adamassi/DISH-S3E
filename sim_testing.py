@@ -16,14 +16,15 @@ workspace_y_lims = [-1.0, -0.55]
 battery_position = [   
     [-0.7, -0.6, 0.03],
     [-0.7, -0.7, 0.03],
-    [-0.7, -0.8, 0.03],
+    #[-0.7, -0.8, 0.03],
+    [0, 0.6, 0.76],
     [-0.7, -0.9, 0.03]]
    
 
 executor = MotionExecutor(env)
 print("waiting for 1 second")
 start_time = time.time()
-while time.time() - start_time < 15:
+while time.time() - start_time < 5:
         pass  # wait for 5 seconds to let the simulation start
 # Add batterys to the world
 env.reset(randomize=False, dish_positions=battery_position)
@@ -39,7 +40,7 @@ executor.plan_and_move_to_xyz_facing_down("ur5e_2", [-0.7, -0.6, 0.15])
 #executor.moveJ("ur5e_2", move_to)
 # executor.pick_up("ur5e_2", -.5, -0.8, 0.03)
 
-executor.pick_up("ur5e_1", -0.1, -0.1, 0.7)
+executor.pick_up("ur5e_1", 0, 0.6, 0.16)
 executor.plan_and_move_to_xyz_facing_down("ur5e_1", [0.3, 0.3, 0.1])
 
 #executor.put_down("ur5e_2", -0.4, -0.4, 0.2)
@@ -56,7 +57,20 @@ env._mj_data.joint(door_joint_name).qpos[0] = door_open_position
 current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
 env.step(current_joint_positions)  # Step the simulation to apply the change
 
-executor.wait(9000)
+
+# Slide out the dishwasher rack
+rack_joint_name = "Dishwasher/top_rack"  # Correct joint name
+rack_slide_position = 0.274  # Slide almost fully out (range is 0 to 0.274)
+
+# Set the joint position
+env._mj_data.joint(rack_joint_name).qpos[0] = rack_slide_position
+
+# Pass the current joint positions to the step method
+current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+env.step(current_joint_positions)  # Step the simulation to apply the change
+
+
+executor.wait(1000)
 
 
 
