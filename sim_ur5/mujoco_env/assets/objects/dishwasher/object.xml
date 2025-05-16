@@ -15,4 +15,8 @@
         </body>
     </worldbody>
 
+    <!-- <actuator>
+        <position joint="door" kp="10" />
+    </actuator> -->
+
 </mujoco>
