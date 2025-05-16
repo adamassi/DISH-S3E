@@ -48,6 +48,8 @@ sceneHouseTableWorld = SceneSpec(
     objects=(
         ObjectSpec('bin_dark_wood', base_pos=[0.2, -0.3, 0]),
         ObjectSpec('milk', base_pos=[0.2, -0.3, 0.1], base_joints=(JointSpec('free'),)),
+        ObjectSpec('plate', base_pos=[1, 0.0, 0.7], base_joints=(JointSpec('free'),)),
+        ObjectSpec('Dishwasher', base_pos=[0.5, 0.0, 0.7]),# base_joints=(JointSpec('free'),)),
     ),
     render_camera='top-right',
     init_keyframe='home'
@@ -62,14 +64,14 @@ muj_env_config = dict(
         ur5e_1=dict(
             resource='ur5e',
             attachments=['adhesive_gripper'],
-            base_pos=[0, 0, 0.01],
+            base_pos=[0, 0, 0.7],
             base_rot=[0, 0, 1.57079632679],
             privileged_info=True,
         ),
         ur5e_2=dict(
             resource='ur5e',
             attachments=['adhesive_gripper'],
-            base_pos=[-0.76, -1.33, 0.01],
+            base_pos=[-0.76, -1.33, 0.7],
             base_rot=[0, 0, -1.57079632679],
             privileged_info=True,
         ),
