@@ -48,11 +48,11 @@ sceneHouseTableWorld = SceneSpec(
     'housetableworld',
     objects=(
         ObjectSpec('bin_dark_wood', base_pos=[0.0, -0.6, 0.7]),
-        ObjectSpec('milk', base_pos=[0.0, -0.6, 0.8], base_joints=(JointSpec('free'),)),
+        ObjectSpec('can', base_pos=[0.0, -0.6, 0.8], base_joints=(JointSpec('free'),)),
         #ObjectSpec('plate', base_pos=[0, 0.6, 0.71], base_joints=(JointSpec('free'),)),
         # ObjectSpec('plate', base_pos=[0, 0.6, 0.73], base_joints=(JointSpec('free'),)),
         # ObjectSpec('plate', base_pos=[0, 0.6, 0.76], base_joints=(JointSpec('free'),)),
-        ObjectSpec('Dishwasher', base_pos=[0.6, -0.9, 0.7]),# base_joints=(JointSpec('free'),)),
+        ObjectSpec('Dishwasher', base_pos=[0.6, -1, 0.7]),# base_joints=(JointSpec('free'),)),
     ),
     render_camera='top-right',
     init_keyframe='home'
@@ -68,7 +68,7 @@ muj_env_config = dict(
             resource='ur5e',
             attachments=['adhesive_gripper'],
             mount='rethink_stationary',
-            base_pos=[-0.1, 0, 0.01],
+            base_pos=[0, 0.0, 0.01],
             base_rot=[0, 0, 1.57079632679],
             privileged_info=True,
         ),
