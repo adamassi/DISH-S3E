@@ -64,3 +64,14 @@ python convert.py
    - Verify start and goal positions are valid
    - Check for obstacles in the path
 ////
+
+
+
+
+
+
+#firas
+python3.11 -m venv venv  
+source venv/bin/activate 
+pip install -r requirements.txt
+mjpython -m sim_testing.py 

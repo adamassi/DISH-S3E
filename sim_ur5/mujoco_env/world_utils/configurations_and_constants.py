@@ -48,6 +48,8 @@ sceneHouseTableWorld = SceneSpec(
     objects=(
         ObjectSpec('bin_dark_wood', base_pos=[0.2, -0.3, 0]),
         ObjectSpec('milk', base_pos=[0.2, -0.3, 0.1], base_joints=(JointSpec('free'),)),
+        ObjectSpec('plate', base_pos=[1, 0.0, 0.7], base_joints=(JointSpec('free'),)),
+        ObjectSpec('Dishwasher', base_pos=[0.5, 0.0, 0.7]),# base_joints=(JointSpec('free'),)),
     ),
     render_camera='top-right',
     init_keyframe='home'
@@ -66,7 +68,8 @@ muj_env_config = dict(
             base_rot=[0, 0, 1.57079632679],
             privileged_info=True,
         ),
-        
+
+
     ),
     tasks=dict(
         ur5e_1=NullTask,

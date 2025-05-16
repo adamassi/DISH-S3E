@@ -23,7 +23,7 @@ battery_position = [
 executor = MotionExecutor(env)
 print("waiting for 1 second")
 start_time = time.time()
-while time.time() - start_time < 5:
+while time.time() - start_time < 15:
         pass  # wait for 5 seconds to let the simulation start
 # Add batterys to the world
 env.reset(randomize=False, dish_positions=battery_position)
