@@ -17,6 +17,7 @@ The simulation environment provides a simplified setup for:
 - Required Python packages (see `requirements.txt`)
 
 ## Clone the repository:
+git clone https://github.com/adamassi/DISH-S3E.git
 
 
 ```
