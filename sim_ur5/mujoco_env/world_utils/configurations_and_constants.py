@@ -68,17 +68,12 @@ muj_env_config = dict(
             base_rot=[0, 0, 1.57079632679],
             privileged_info=True,
         ),
-        ur5e_2=dict(
-            resource='ur5e',
-            attachments=['adhesive_gripper'],
-            base_pos=[-0.76, -1.33, 0.7],
-            base_rot=[0, 0, -1.57079632679],
-            privileged_info=True,
-        ),
+
+
     ),
     tasks=dict(
         ur5e_1=NullTask,
-        ur5e_2=NullTask,
+        # ur5e_2=NullTask,
     ),
 )
 
