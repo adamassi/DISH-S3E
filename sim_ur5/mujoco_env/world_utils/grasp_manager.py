@@ -17,7 +17,7 @@ class GraspManager:
 
         self.attached_object_name = None
 
-    def grasp_battery_if_close_enough(self) -> bool:
+    def grasp_dish_if_close_enough(self) -> bool:
         """
         find the nearest object and grasp it if it is close enough
         """

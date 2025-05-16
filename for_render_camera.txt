@@ -1,0 +1,5 @@
+
+housetableworld:
+
+Valid names: ['birdview', 'frontview', 'leftangleview', 'leftsideview',
+'rightangleview', 'rightsideview']"

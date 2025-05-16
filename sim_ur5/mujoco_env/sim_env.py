@@ -37,7 +37,7 @@ class SimEnv:
         self._object_manager = ObjectManager(self._mj_model, self._mj_data)
         self._grasp_manager = GraspManager(self._mj_model, self._mj_data, self._object_manager, min_grasp_distance=0.1)
 
-        self.num_batterys = len(self._object_manager.object_names)
+        self.num_dishs = len(self._object_manager.object_names)
 
         self.image_res_h = 720
         self.image_res_w = 1280
@@ -58,11 +58,11 @@ class SimEnv:
         if simulate_step:
             self.simulate_steps(1)
 
-    def set_battery_positions_on_table(self, battery_positions_xy):
+    def set_dish_positions_on_table(self, dish_positions_xy):
         z = 0.03
-        self._object_manager.set_all_battery_positions([[x, y, z] for x, y in battery_positions_xy])
+        self._object_manager.set_all_dish_positions([[x, y, z] for x, y in dish_positions_xy])
 
-    def reset(self, randomize=True, battery_positions=None):
+    def reset(self, randomize=True, dish_positions=None):
         self.max_joint_velocities = INIT_MAX_VELOCITY
 
         obs, _ = self._env.reset()
@@ -78,7 +78,7 @@ class SimEnv:
             self.robots_camera[agent] = [obs[agent]['camera'], obs[agent]['camera_pose']]
         self.gripper_state_closed = False
         self._grasp_manager.release_object()
-        self._object_manager.reset(randomize=randomize, battery_positions=battery_positions)
+        self._object_manager.reset(randomize=randomize, dish_positions=dish_positions)
 
         self.step(self.robots_joint_pos, gripper_closed=False)
 
@@ -101,7 +101,7 @@ class SimEnv:
             if self._grasp_manager.attached_object_name is not None:
                 self._grasp_manager.update_grasped_object_pose()
             else:
-                self._grasp_manager.grasp_battery_if_close_enough()
+                self._grasp_manager.grasp_dish_if_close_enough()
         else:
             self._grasp_manager.release_object()
 
@@ -124,7 +124,7 @@ class SimEnv:
         return None
 
     def get_state(self):
-        # object_positions = self._object_manager.get_all_battery_positions_dict()
+        # object_positions = self._object_manager.get_all_dish_positions_dict()
         state = {"robots_joint_pos": self.robots_joint_pos,
                  "robots_joint_velocities": self.robots_joint_velocities,
                  # "robots_force": self.robots_force,
@@ -137,20 +137,20 @@ class SimEnv:
         return deepcopy(state)
 
     def get_tower_height_at_point(self, point):
-        battery_positions = self._object_manager.get_all_battery_positions_dict()
-        not_grasped_battery_positions = {name: pos for name, pos in battery_positions.items()
+        dish_positions = self._object_manager.get_all_dish_positions_dict()
+        not_grasped_dish_positions = {name: pos for name, pos in dish_positions.items()
                                        if name != self._grasp_manager.attached_object_name}
-        not_grasped_battery_positions = np.array(list(not_grasped_battery_positions.values()))
+        not_grasped_dish_positions = np.array(list(not_grasped_dish_positions.values()))
 
-        batterys_near_point = not_grasped_battery_positions[
-            np.linalg.norm(not_grasped_battery_positions[:, :2] - point, axis=1) < 0.03]
-        highest_battery_height = np.max(batterys_near_point[:, 2]) if batterys_near_point.size > 0 \
-            else not_grasped_battery_positions[:, 2].min() - 0.02
-        # if no batterys near point, return zero height which is estimated as lowest battery minus battery size
-        return copy(highest_battery_height)
+        dishs_near_point = not_grasped_dish_positions[
+            np.linalg.norm(not_grasped_dish_positions[:, :2] - point, axis=1) < 0.03]
+        highest_dish_height = np.max(dishs_near_point[:, 2]) if dishs_near_point.size > 0 \
+            else not_grasped_dish_positions[:, 2].min() - 0.02
+        # if no dishs near point, return zero height which is estimated as lowest dish minus dish size
+        return copy(highest_dish_height)
 
-    def get_battery_positions(self):
-        return list(self._object_manager.get_all_battery_positions_dict().values())
+    def get_dish_positions(self):
+        return list(self._object_manager.get_all_dish_positions_dict().values())
 
     def set_gripper(self, closed: bool):
         """
