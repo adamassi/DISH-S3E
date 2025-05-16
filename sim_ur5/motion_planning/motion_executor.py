@@ -39,6 +39,7 @@ def point_in_square(square_center, edge_length, point):
 
 def canonize_config(config, boundries=(1.2 * np.pi, np.pi, np.pi, 1.5 * np.pi, 1.5 * np.pi, 1.2 * np.pi) * 6):
     for i in range(6):
+        print(f"config {i} {config[i]}")
         while config[i] > boundries[i]:
             config[i] -= 2 * np.pi
         while config[i] < -boundries[i]:
@@ -94,17 +95,11 @@ class MotionExecutor:
         # Generate smooth joint trajectories
         trajectories = []
         for i, diff in enumerate(joint_diffs):
-            if abs(diff) > tolerance/4:
+            if abs(diff) > tolerance / 4:
                 trajectory = self.generate_smooth_trajectory(current_joints[i], target_joints[i], num_steps)
                 trajectories.append(trajectory)
             else:
                 trajectories.append(np.full(num_steps, current_joints[i]))
-        #TODO save orig other robot config
-        for robot in self.env.robots_joint_pos.keys():
-            if robot != robot_name:
-                other_robot = robot
-
-        other_robot_positions = self.env.get_agent_joint(other_robot)
 
         # Execute the trajectory
         for step in range(max_steps):
@@ -117,7 +112,6 @@ class MotionExecutor:
                        robot != robot_name}
             actions[robot_name] = target_positions
             self.env.step(actions)
-            self.env.set_robot_joints(robot_name=other_robot, joint_pos=other_robot_positions, simulate_step=False)
 
             # Check if we've reached the target joints
             current_joints = self.env.robots_joint_pos[robot_name]
@@ -128,7 +122,6 @@ class MotionExecutor:
 
         if step == max_steps - 1:
             logging.warning(f"Movement for {robot_name} timed out before reaching the target joints.")
-
 
     def generate_smooth_trajectory(self, start, end, num_steps):
         t = np.linspace(0, 1, num_steps)
@@ -313,6 +306,7 @@ class MotionExecutor:
             print(f"WARNING: IK solution not found for {robot_name}")
 
         if cannonized_config:
+            print(f"cannonizing config {goal_config}")
             goal_config = canonize_config(goal_config)
 
         return self.plan_and_moveJ(robot_name=robot_name,
