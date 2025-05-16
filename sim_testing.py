@@ -45,6 +45,20 @@ executor.plan_and_move_to_xyz_facing_down("ur5e_1", [0.3, 0.3, 0.1])
 #executor.put_down("ur5e_2", -0.4, -0.4, 0.2)
 executor.wait(1000)
 
+# Open the dishwasher door
+door_joint_name = "Dishwasher/door"  # Correct joint name
+door_open_position = -1.5  # Fully open position (in radians)
+
+# Set the joint position
+env._mj_data.joint(door_joint_name).qpos[0] = door_open_position
+
+# Pass the current joint positions to the step method
+current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+env.step(current_joint_positions)  # Step the simulation to apply the change
+
+executor.wait(9000)
+
+
 
 
 
