@@ -44,7 +44,8 @@ class SimEnv:
         self.renderer = mj.Renderer(self._mj_model, self.image_res_h, self.image_res_w)
         self._mj_model.camera("robot-cam").fovy[0] = 45
 
-        self._ee_mj_data = self._mj_data.body('robot_0_ur5e/robot_0_adhesive gripper/')
+        # Update the body name to reflect the new hierarchy
+        self._ee_mj_data = self._mj_data.body('rethink_mount_stationary/robot_0_ur5e/robot_0_adhesive gripper/')
         # self.dt = self._mj_model.opt.timestep * frame_skip
         # self._pid_controller = PIDController(kp, ki, kd, dt)
 

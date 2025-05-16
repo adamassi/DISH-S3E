@@ -27,6 +27,7 @@ muj_env_config1 = dict(
             base_pos=[0, 0, 0.01],
             base_rot=[0, 0, 1.57079632679],
             privileged_info=True,
+
         ),
         ur5e_2=dict(
             resource='ur5e',
@@ -64,10 +65,12 @@ muj_env_config = dict(
         ur5e_1=dict(
             resource='ur5e',
             attachments=['adhesive_gripper'],
-            base_pos=[0, 0, 0.7],
+            mount='rethink_stationary',
+            base_pos=[-0.1, 0, 0.01],
             base_rot=[0, 0, 1.57079632679],
             privileged_info=True,
         ),
+
 
 
     ),
