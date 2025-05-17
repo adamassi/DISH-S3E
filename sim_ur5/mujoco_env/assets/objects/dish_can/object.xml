@@ -6,6 +6,7 @@
     </asset>
     <worldbody>
         <body name="object">
+            <!-- <joint name="dish4_jf" type="free"/> -->
             <geom pos="0 0 0" mesh="can_mesh" type="mesh" solimp="0.998 0.998 0.001" solref="0.001 1" density="100"
                   friction="0.95 0.3 0.1" material="coke" group="0" condim="4"/>
         </body>

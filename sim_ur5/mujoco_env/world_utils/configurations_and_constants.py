@@ -3,88 +3,84 @@ import numpy as np
 from sim_ur5.mujoco_env.tasks.null_task import NullTask
 from sim_ur5.mujoco_env.episode import *
 
-'secene for clairlab'
+# Scene configuration for ClairLab
 sceneclairlab = SceneSpec(
     'clairlab',
     objects=(
+        # Define objects in the ClairLab scene
         ObjectSpec('bin_dark_wood', base_pos=[0.2, -0.3, 0]),
-        ObjectSpec('milk', base_pos=[0.2, -0.3, 0.1], base_joints=(JointSpec('free'),)),
+        ObjectSpec('milk', base_pos=[0.2, -0.3, 0.1], base_joints=(JointSpec('free'),)),  # Milk object with a free joint
     ),
-    render_camera='top-right',
-    init_keyframe='home'
+    render_camera='top-right',  # Camera used for rendering
+    init_keyframe='home'  # Initial keyframe for the scene
 )
+
+# Configuration for the MuJoCo environment with two UR5e robots
 muj_env_config1 = dict(
-    scene=sceneclairlab,
-    #hda alshe ale kan baloal
-    # scene=dict(
-    #     resource='clairlab',
-    #     render_camera='top-right'
-    # ),
+    scene=sceneclairlab,  # Use the ClairLab scene
     robots=dict(
+        # Define the first UR5e robot
         ur5e_1=dict(
             resource='ur5e',
-            attachments=['adhesive_gripper'],
-            base_pos=[0, 0, 0.01],
-            base_rot=[0, 0, 1.57079632679],
-            privileged_info=True,
-
+            attachments=['adhesive_gripper'],  # Attach an adhesive gripper
+            base_pos=[0, 0, 0.01],  # Base position of the robot
+            base_rot=[0, 0, 1.57079632679],  # Base rotation of the robot
+            privileged_info=True,  # Enable privileged information
         ),
+        # Define the second UR5e robot
         ur5e_2=dict(
             resource='ur5e',
-            attachments=['adhesive_gripper'],
-            base_pos=[-0.76, -1.33, 0.01],
-            base_rot=[0, 0, -1.57079632679],
-            privileged_info=True,
+            attachments=['adhesive_gripper'],  # Attach an adhesive gripper
+            base_pos=[-0.76, -1.33, 0.01],  # Base position of the robot
+            base_rot=[0, 0, -1.57079632679],  # Base rotation of the robot
+            privileged_info=True,  # Enable privileged information
         ),
     ),
     tasks=dict(
-        ur5e_1=NullTask,
-        ur5e_2=NullTask,
+        ur5e_1=NullTask,  # Assign a null task to the first robot
+        ur5e_2=NullTask,  # Assign a null task to the second robot
     ),
 )
 
-'secene for HouseTableWorld'
+# Scene configuration for HouseTableWorld
 sceneHouseTableWorld = SceneSpec(
     'housetableworld',
     objects=(
-        ObjectSpec('bin_dark_wood', base_pos=[0.0, -0.6, 0.7]),
-        ObjectSpec('can', base_pos=[0.0, -0.6, 0.8], base_joints=(JointSpec('free'),)),
-        #ObjectSpec('plate', base_pos=[0, 0.6, 0.71], base_joints=(JointSpec('free'),)),
-        # ObjectSpec('plate', base_pos=[0, 0.6, 0.73], base_joints=(JointSpec('free'),)),
-        # ObjectSpec('plate', base_pos=[0, 0.6, 0.76], base_joints=(JointSpec('free'),)),
-        ObjectSpec('Dishwasher', base_pos=[0.6, -1, 0.7]),# base_joints=(JointSpec('free'),)),
-    ),
-    render_camera='top-right',
-    init_keyframe='home'
-)
-# This is the configuration for the mujoco environment for the UR5e robot with two UR5e robots and a battery object.
-# cfg
-muj_env_config = dict(
-    scene=sceneHouseTableWorld,
-    
-    robots=dict(
+        # Define objects in the HouseTableWorld scene
+        ObjectSpec('bin_dark_wood', base_pos=[0.0, -0.6, 0.]),  # Bin object
+        ObjectSpec('plate', base_pos=[0, 0.6, 0.01], base_joints=(JointSpec('free',attrs={'name': 'dish5_fj'}),),),
+        ObjectSpec('dish_can', base_pos=[0.0, 0.6, 0.4], base_joints=(JointSpec('free',attrs={'name': 'dish4_fj'}),),),  # Can object with a free joint
+        ObjectSpec('Dishwasher', base_pos=[0.6, -1, 0.]),  # Dishwasher object
         
+    ),
+    render_camera='top-right',  # Camera used for rendering
+    init_keyframe='home'  # Initial keyframe for the scene
+)
+
+# Configuration for the MuJoCo environment with one UR5e robot
+muj_env_config = dict(
+    scene=sceneHouseTableWorld,  # Use the HouseTableWorld scene
+    robots=dict(
+        # Define the first UR5e robot
         ur5e_1=dict(
             resource='ur5e',
-            attachments=['adhesive_gripper'],
-            mount='rethink_stationary',
-            base_pos=[0, 0.0, 0.01],
-            base_rot=[0, 0, 1.57079632679],
-            privileged_info=True,
+            attachments=['adhesive_gripper'],  # Attach an adhesive gripper
+            mount='rethink_stationary',  # Mount the robot on a stationary base
+            base_pos=[0, 0.0, -0.7],  # Base position of the robot
+            base_rot=[0, 0, 1.57079632679],  # Base rotation of the robot
+            privileged_info=True,  # Enable privileged information
         ),
-
-
-
     ),
     tasks=dict(
-        ur5e_1=NullTask,
-        # ur5e_2=NullTask,
+        ur5e_1=NullTask,  # Assign a null task to the first robot
     ),
 )
 
-INIT_MAX_VELOCITY = np.array([3]*6)
+# Maximum velocity for initialization
+INIT_MAX_VELOCITY = np.array([3] * 6)
 
-# relative position of grasped object from end effector
+# Relative position of the grasped object from the end effector
 grasp_offset = 0.02
 
+# Frame skip for simulation
 frame_skip = 5

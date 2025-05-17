@@ -39,7 +39,7 @@ def point_in_square(square_center, edge_length, point):
 
 def canonize_config(config, boundries=(1.2 * np.pi, np.pi, np.pi, 1.5 * np.pi, 1.5 * np.pi, 1.2 * np.pi) * 6):
     for i in range(6):
-        print(f"config {i} {config[i]}")
+        # print(f"config {i} {config[i]}")
         while config[i] > boundries[i]:
             config[i] -= 2 * np.pi
         while config[i] < -boundries[i]:

@@ -26,9 +26,12 @@ class GraspManager:
 
         # a battery is grasped if distance in x and distance in y are less than 0.015 and in z less than 0.03
         for i, object_position in enumerate(object_positions):
+            print(f"Gripper position: {gripper_position} Object name: {self.graspable_objects_names[i]} Object position: {object_position}")
             if np.abs(object_position[0] - gripper_position[0]) < 0.015 and \
                     np.abs(object_position[1] - gripper_position[1]) < 0.015 and\
-                    np.abs(object_position[2] - gripper_position[2]) < 0.05:
+                    np.abs(object_position[2] - gripper_position[2]) < 0.08:
+                #print object_names
+                # print(f"grasping object {self.graspable_objects_names[i]} at position {object_position}")
                 self.grasp_object(self.graspable_objects_names[i])
                 return True
 

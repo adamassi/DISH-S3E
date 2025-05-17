@@ -9,12 +9,28 @@ class ObjectManager:
     def __init__(self, mj_model, mj_data):
         self._mj_model = mj_model
         self._mj_data = mj_data
-
+        
         # manipulated objects have 6dof free joint that must be named in the mcjf.
         all_joint_names = [self._mj_model.joint(i).name for i in range(self._mj_model.njnt)]
+        #prinr all joint names
+        print(f"AAAAAAAAAAAAAAAAAAAAAAAAAAAAall_joint_names: {all_joint_names}")
+        #itorat over all joint names if start with dish icremant counter if name starts with can rename and increment counter
+        # dish_counter = 0
+        # for name in all_joint_names:
+        #     if name.startswith("dish"):
+        #         dish_counter += 1
+        #     elif name.startswith("can"):
+        #         # rename the joint to dishX
+        #         new_name = f"dish{dish_counter}_fj"
+        #         self._mj_model.joint(name).name = new_name
+        #         # increment the counter
+        #         dish_counter += 1
+        
 
-        # all bodies that ends with "box"
-        self.object_names = [name for name in all_joint_names if name.startswith("dish")]
+                
+        # all bodies that ends with 
+        self.object_names = [name for name in all_joint_names if name.startswith("dish") or name.startswith("can") or name.startswith("plate")]
+        print(f"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBobject_names:                                     {self.object_names}")
         self.objects_mjdata_dict = {name: self._mj_model.joint(name) for name in self.object_names}
         self.initial_positions_dict = self.get_all_dish_positions()
         self.workspace_x_lims = [-0.9, -0.54]
@@ -27,14 +43,14 @@ class ObjectManager:
         Args:
             randomize: if True, randomize the positions of the dishs, otherwise set them to initial positions.
         """
-        print("resetting object positionsAAAAAAAAAAAAAAAAAAAAAAAAA")
+        # print("resetting object positionsAAAAAAAAAAAAAAAAAAAAAAAAA")
         # orint the dish positions
-        print(f"dish_positions: {dish_positions}")
+        # print(f"dish_positions: {dish_positions}")
         def check_dish_collision(new_pos):
             """Tests if new position for dish collides with any other dish"""
             for pos in dish_positions:
-                print("checking collisionBBBBBBBBBBBBBBBBBBB")
-                print(f"new_pos: {new_pos}, pos: {pos}")
+                # print("checking collisionBBBBBBBBBBBBBBBBBBB")
+                # print(f"new_pos: {new_pos}, pos: {pos}")
                 pos_np = np.array(pos)
                 if np.linalg.norm(new_pos - pos_np) < 2 * self.dish_size:
                     return True
@@ -42,7 +58,7 @@ class ObjectManager:
             return False
 
         if randomize:
-            print("randomizing dish positionsCCCCCCCCCCCCCCCCC")
+            # print("randomizing dish positionsCCCCCCCCCCCCCCCCC")
             # randomize dish positions
             dish_positions = []
             for _ in range(len(self.object_names)):
@@ -107,7 +123,15 @@ class ObjectManager:
             dish_id: the id of the dish to set the position of.
             position: the position to set the dish to, position will be in format [x, y ,z].
         """
-        joint_name = f"dish{dish_id}_fj"
+        print(f"setting dish {dish_id} position to {position}")
+        if dish_id == 4:
+            joint_name = f"can/dish{dish_id}_fj/"
+        elif dish_id == 5:
+            joint_name = f"plate/dish{dish_id}_fj/"
+        else:
+            joint_name = f"dish{dish_id}_fj"
+        
+        # joint_name =  f"dish{dish_id}_fj"
         joint_id = self._mj_model.joint(joint_name).id
         pos_adrr = self._mj_model.jnt_qposadr[joint_id]
         self._mj_data.qpos[pos_adrr:pos_adrr + 3] = position
