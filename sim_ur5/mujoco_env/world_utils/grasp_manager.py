@@ -24,8 +24,9 @@ class GraspManager:
         object_positions = [self.object_manager.get_object_pos(name) for name in self.graspable_objects_names]
         gripper_position = self._ee_mj_data.xpos
 
-        # a battery is grasped if distance in x and distance in y are less than 0.015 and in z less than 0.03
+        # a DISH is grasped if distance in x and distance in y are less than 0.015 and in z less than 0.03
         for i, object_position in enumerate(object_positions):
+            # TODO: add a check for the object to be graspable TODELETE
             print(f"Gripper position: {gripper_position} Object name: {self.graspable_objects_names[i]} Object position: {object_position}")
             if np.abs(object_position[0] - gripper_position[0]) < 0.015 and \
                     np.abs(object_position[1] - gripper_position[1]) < 0.015 and\

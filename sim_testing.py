@@ -17,9 +17,9 @@ battery_position = [
     [-0.7, -0.6, 0.03],
     [-0.7, -0.7, 0.03],
     [-0.7, -0.8, 0.03],
-    [0, -0.6, 0.98],
-    [0, -0.6, 0.98],
-    [0, 0.6, 1.1],
+    [0, -0.6, -0.08], # 
+    [0, -0.6, 0.08],
+    [0, 0.6, 0.1], # plate
     ]
    
 
@@ -43,11 +43,13 @@ executor.plan_and_move_to_xyz_facing_down("ur5e_2", [-0.7, -0.6, 0.15])
 # executor.pick_up("ur5e_2", -.5, -0.8, 0.03)
 
 executor.pick_up("ur5e_1", 0, 0.6, 0.15)
+executor.put_down("ur5e_1", 0, 0.8, 0.15)
+
 
 executor.pick_up("ur5e_1", 0, -0.6, 0.2)
 executor.plan_and_move_to_xyz_facing_down("ur5e_1", [0.3, 0.3, 0.1])
 
-#executor.put_down("ur5e_2", -0.4, -0.4, 0.2)
+
 executor.wait(1000)
 
 # Open the dishwasher door

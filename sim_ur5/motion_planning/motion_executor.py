@@ -262,7 +262,7 @@ class MotionExecutor:
         """
         Plans and moves the robot to the given (x, y, z) position while keeping the end effector facing up.
 
-        :param robot_name: Name of the robot (e.g., "ur5e_1" or "ur5e_2")
+        :param robot_name: Name of the robot ( "ur5e_1" )
         :param target_xyz: Target position (x, y, z) in world coordinates
         :return: Planned path if successful, None otherwise
         """
