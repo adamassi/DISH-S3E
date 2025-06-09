@@ -236,6 +236,29 @@ class SimEnv:
     def get_agent_joint(self, agent_name):
         return self.robots_joint_pos[agent_name]
 
+    def update_object_position(self, object_name, new_position):
+        """
+        Update the position of a specific object and ensure it affects other objects in the simulation.
+
+        Args:
+            object_name: The name of the object to update (e.g., "plate").
+            new_position: A list [x, y, z] specifying the new position of the object.
+        """
+        # Get the object's current position
+        
+        
+        # Update the object's position
+        joint_id = self._mj_model.joint(object_name).id
+        pos_adrr = self._mj_model.jnt_qposadr[joint_id]
+        print(f"Current position of {object_name}: {self._mj_data.qpos[pos_adrr:pos_adrr + 3]}")
+        self._mj_data.qpos[pos_adrr:pos_adrr + 3] = new_position
+        print(f"Updated position of {object_name}: {new_position}")
+
+        # Step the simulation to apply the changes
+        self.simulate_steps(10)
+        print(f"Simulation updated with new position for {object_name}.")
+
+
 
 def convert_mj_struct_to_namedtuple(mj_struct):
     """

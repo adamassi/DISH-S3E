@@ -436,7 +436,7 @@ class MotionExecutor:
                                                     speed=4.,
                                                     acceleration=4.,
                                                     blend_radius=0.05,
-                                                    tolerance=0.03, )
+                                                    tolerance=0.09, )
         if not res:
             return False
 

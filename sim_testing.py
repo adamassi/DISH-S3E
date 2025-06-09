@@ -13,7 +13,7 @@ env = SimEnv()
 workspace_x_lims = [-0.9, -0.54]
 workspace_y_lims = [-1.0, -0.55]
 """
-battery_position = [   
+dishs_position = [   
     [-0.7, -0.6, 0.03],
     [-0.7, -0.7, 0.03],
     [-0.7, -0.8, 0.03],
@@ -29,18 +29,17 @@ start_time = time.time()
 while time.time() - start_time < 5:
         pass  # wait for 5 seconds to let the simulation start
 # Add batterys to the world
-env.reset(randomize=False, dish_positions=battery_position)
+env.reset(randomize=False, dish_positions=dishs_position)
 #executor.pick_up("ur5e_2", -0.6, -0.5, 0.03)
 
 
 """
 executor.plan_and_move_to_xyz_facing_down("ur5e_2", [-0.7, -0.6, 0.15])
 """
-#current_joint_angles = env.robots_joint_pos["ur5e_2"]
-#print(f"current_joint_angles {current_joint_angles}")
-#move_to = [1.305356658502026, -0.7908733209856437, 1.4010098471710881, 4.102251451313659, -1.5707962412281837, -0.26543967541515895]
-#executor.moveJ("ur5e_2", move_to)
-# executor.pick_up("ur5e_2", -.5, -0.8, 0.03)
+
+executor.pick_up("ur5e_1", 0, -0.6, 0.20) #pick up the first dish "box" in the box need to had 20 cm up 
+executor.put_down("ur5e_1", 0, 0.9, 0.25)
+
 
 executor.pick_up("ur5e_1", 0, 0.6, 0.15)
 executor.put_down("ur5e_1", 0, 0.8, 0.15)
