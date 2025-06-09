@@ -3,44 +3,7 @@ import numpy as np
 from sim_ur5.mujoco_env.tasks.null_task import NullTask
 from sim_ur5.mujoco_env.episode import *
 
-# Scene configuration for ClairLab
-sceneclairlab = SceneSpec(
-    'clairlab',
-    objects=(
-        # Define objects in the ClairLab scene
-        ObjectSpec('bin_dark_wood', base_pos=[0.2, -0.3, 0]),
-        ObjectSpec('milk', base_pos=[0.2, -0.3, 0.1], base_joints=(JointSpec('free'),)),  # Milk object with a free joint
-    ),
-    render_camera='top-right',  # Camera used for rendering
-    init_keyframe='home'  # Initial keyframe for the scene
-)
 
-# Configuration for the MuJoCo environment with two UR5e robots
-muj_env_config1 = dict(
-    scene=sceneclairlab,  # Use the ClairLab scene
-    robots=dict(
-        # Define the first UR5e robot
-        ur5e_1=dict(
-            resource='ur5e',
-            attachments=['adhesive_gripper'],  # Attach an adhesive gripper
-            base_pos=[0, 0, 0.01],  # Base position of the robot
-            base_rot=[0, 0, 1.57079632679],  # Base rotation of the robot
-            privileged_info=True,  # Enable privileged information
-        ),
-        # Define the second UR5e robot
-        ur5e_2=dict(
-            resource='ur5e',
-            attachments=['adhesive_gripper'],  # Attach an adhesive gripper
-            base_pos=[-0.76, -1.33, 0.01],  # Base position of the robot
-            base_rot=[0, 0, -1.57079632679],  # Base rotation of the robot
-            privileged_info=True,  # Enable privileged information
-        ),
-    ),
-    tasks=dict(
-        ur5e_1=NullTask,  # Assign a null task to the first robot
-        ur5e_2=NullTask,  # Assign a null task to the second robot
-    ),
-)
 
 # Scene configuration for HouseTableWorld
 sceneHouseTableWorld = SceneSpec(

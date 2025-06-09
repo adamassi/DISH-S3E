@@ -50,7 +50,7 @@ executor.pick_up("ur5e_1", 0, -0.6, 0.2)
 executor.plan_and_move_to_xyz_facing_down("ur5e_1", [0.3, 0.3, 0.1])
 
 
-executor.wait(1000)
+executor.wait(10)
 
 # Open the dishwasher door
 door_joint_name = "Dishwasher/door"  # Correct joint name
