@@ -132,8 +132,8 @@ class SimEnv:
                  # "robots_camera": self.robots_camera,
                  "gripper_state_closed": self.gripper_state_closed,
                  # "object_positions": object_positions,
-                 "grasped_object": self._grasp_manager.attached_object_name,}
-                 # "geom_contact": convert_mj_struct_to_namedtuple(self._env.sim.data.contact)}
+                 "grasped_object": self._grasp_manager.attached_object_name,
+                 "geom_contact": convert_mj_struct_to_namedtuple(self._env.sim.data.contact)}
 
         return deepcopy(state)
 
@@ -250,15 +250,78 @@ class SimEnv:
         # Update the object's position
         joint_id = self._mj_model.joint(object_name).id
         pos_adrr = self._mj_model.jnt_qposadr[joint_id]
-        print(f"Current position of {object_name}: {self._mj_data.qpos[pos_adrr:pos_adrr + 3]}")
+        # print(f"Current position of {object_name}: {self._mj_data.qpos[pos_adrr:pos_adrr + 3]}")
         self._mj_data.qpos[pos_adrr:pos_adrr + 3] = new_position
-        print(f"Updated position of {object_name}: {new_position}")
+        # print(f"Updated position of {object_name}: {new_position}")
 
         # Step the simulation to apply the changes
         self.simulate_steps(10)
-        print(f"Simulation updated with new position for {object_name}.")
+        # print(f"Simulation updated with new position for {object_name}.")
 
+    def get_contacts(self, geom1_name, geom2_name):
+        """
+        Get the indices in the MuJoCo contacts database that match those of the given geoms, 
+        and the direction of contact (1 - geom1 to geom2; -1 - geom2 to geom1).
 
+        Args:
+            geom1_name: The name of the first geometry (string).
+            geom2_name: The name of the second geometry (string).
+
+        Returns:
+            contact_idx: A list of indices in the MuJoCo contacts database.
+            contact_dir: A list of directions for each contact (1 or -1).
+        """
+        # Retrieve geometry IDs using their names
+        geom1_id = mj.mj_name2id(self._mj_model, mj.mjtObj.mjOBJ_GEOM, geom1_name)
+        geom2_id = mj.mj_name2id(self._mj_model, mj.mjtObj.mjOBJ_GEOM, geom2_name)
+
+        state = self.get_state()
+        contact_idx = []
+        contact_dir = []
+
+        # Iterate through all contacts in the state
+        for i, (contact_id1, contact_id2) in enumerate(state['geom_contact'].geom):
+            if contact_id1 == geom1_id and contact_id2 == geom2_id:
+                contact_idx.append(i)
+                contact_dir.append(1)
+            elif contact_id2 == geom1_id and contact_id1 == geom2_id:
+                contact_idx.append(i)
+                contact_dir.append(-1)
+
+        return contact_idx, contact_dir
+
+    def get_normal_force(self, geom1, geom2):
+        """
+        Get the normal force applied by geom1 on geom2.
+
+        Args:
+            geom1: The first geometry (either a string or a geometry object with a 'name' attribute).
+            geom2: The second geometry (either a string or a geometry object with a 'name' attribute).
+
+        Returns:
+            A numpy array representing the average normal force applied by geom1 on geom2.
+        """
+        self.update_object_position("dish1_fj", [0.5, 0, 1])
+        # Extract geometry names if geom1 and geom2 are objects
+        geom1_name = geom1.name if hasattr(geom1, 'name') else geom1
+        geom2_name = geom2.name if hasattr(geom2, 'name') else geom2
+
+        # Get contacts and directions
+        geom_contacts, geom_contact_dirs = self.get_contacts(geom1_name, geom2_name)
+
+        if not geom_contacts:
+            return np.array([0, 0, 0])
+
+        state = self.get_state()
+        frame = state['geom_contact'].frame[geom_contacts]
+
+        # Normal force is index 0-2 of the force frame (Z-axis). Direction is always geom1 to geom2.
+        # See https://github.com/google-deepmind/mujoco/blob/main/include/mujoco/mjdata.h
+        all_contact_normals = frame.T[0:3]  # Transpose to enable referencing (x, y, z) at the top level
+        all_contact_normals = all_contact_normals * geom_contact_dirs  # Set direction according to args order
+
+        # Average all contact normals for one definite normal force
+        return all_contact_normals.mean(axis=1)
 
 def convert_mj_struct_to_namedtuple(mj_struct):
     """

@@ -40,13 +40,30 @@ while time.time() - start_time < 5:
 
 print("call update_object_position*************")
 # Change the position of the plate dynamically
-env.update_object_position("plate/dish5_fj/", [2, 1, 0.15])  # Update the plate's position
+env.update_object_position("plate/dish5_fj/", [0.7, -0.6, .95])  # Update the plate's position
+env.update_object_position("dish1_fj", [0.5, 0, 1])  # Update the can's position
+
+# Use get_all_dish_positions_dict from ObjectManager to get the positions of all dishes
+print("Current dish positions:")
+print(env._object_manager.get_all_dish_positions_dict())
+
+
+"""
+Current dish positions:
+{'dish0_fj': array([-1.69135539e-20, -6.00000000e-01,  3.74143128e-02])
+,'dish1_fj': array([0.5, 0., 0.842059]),
+,'dish2_fj': array([-0.7, -0.8, -0.0304296])
+,'dish3_fj': array([ 0., -0.8, -0.1404296])
+,'plate/dish5_fj/': array([ 0.69955353, -0.60060461,0.93246688])
+,'can/dish4_fj/': array([-3.60637794e-04,6.00468559e-01,5.00558165e-02])
 
 
 
+contact = env._mj_data.contact[i]
+geom1_id = contact.geom1
+geom2_id = contact.geom2
+body1_id = env._mj_model.geom_bodyid[geom1_id]
+body2_id = env._mj_model.geom_bodyid[geom2_id]
 
-
-print("Waiting for 5 seconds before opening the dishwasher door...")
-
-executor.wait(1000)
+"""
 

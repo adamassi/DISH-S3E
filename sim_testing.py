@@ -75,7 +75,18 @@ current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.r
 env.step(current_joint_positions)  # Step the simulation to apply the change
 
 
-executor.wait(1000)
+# executor.wait(1000)
+
+# Example usage of get_normal_force
+state = env.get_state()
+
+# Replace these with the actual geometry names or objects
+geom1 = "can//unnamed_geom_0"  # Geometry name as a string
+geom2 = "table_black_top"      # Geometry name as a string
+
+# Call get_normal_force
+normal_force = env.get_normal_force(geom2, geom1)
+print(f"Normal force applied by {geom1} on {geom2}: {normal_force}")
 
 
 

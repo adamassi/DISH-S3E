@@ -27,7 +27,13 @@ py -3.10 -m venv venv
 2
 .\venv\Scripts\Activate
 3
-python setup.py
+python setup.py 
+
+
+
+//////
+test for change object location
+python test.py
 
 python sim_testing.py
 
