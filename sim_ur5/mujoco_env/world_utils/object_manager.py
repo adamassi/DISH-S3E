@@ -128,6 +128,8 @@ class ObjectManager:
             joint_name = f"can/dish{dish_id}_fj/"
         elif dish_id == 5:
             joint_name = f"plate/dish{dish_id}_fj/"
+        elif dish_id == 6:
+            joint_name = f"plate_1/dish{dish_id}_fj/"
         else:
             joint_name = f"dish{dish_id}_fj"
         
