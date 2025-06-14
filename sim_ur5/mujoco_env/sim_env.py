@@ -301,6 +301,12 @@ class SimEnv:
         Returns:
             A numpy array representing the average normal force applied by geom1 on geom2.
         """
+        # Ensure the geom1 and geom2 exist in the environment
+        geom_names = [mj.mj_id2name(self._mj_model, mj.mjtObj.mjOBJ_GEOM, geom_id) for geom_id in range(self._mj_model.ngeom)]
+        # print(geom_names)
+
+        if geom1 not in geom_names or geom2 not in geom_names:
+            raise ValueError(f"Geometry '{geom1}' does not exist in the model.")
         self.update_object_position("dish1_fj", [0.5, 0, 1])
         # Extract geometry names if geom1 and geom2 are objects
         geom1_name = geom1.name if hasattr(geom1, 'name') else geom1
@@ -315,6 +321,7 @@ class SimEnv:
         state = self.get_state()
         frame = state['geom_contact'].frame[geom_contacts]
 
+
         # Normal force is index 0-2 of the force frame (Z-axis). Direction is always geom1 to geom2.
         # See https://github.com/google-deepmind/mujoco/blob/main/include/mujoco/mjdata.h
         all_contact_normals = frame.T[0:3]  # Transpose to enable referencing (x, y, z) at the top level
@@ -322,7 +329,30 @@ class SimEnv:
 
         # Average all contact normals for one definite normal force
         return all_contact_normals.mean(axis=1)
+    def valid_geometry_names(self):
+        """
+        Print all valid geometry names in the MuJoCo model.
+        """
+        state = self.get_state()
+        frame = state['geom_contact']
 
+        """ 
+        state = env.get_state()
+        geom1 = env._mj_model.geom('')  # Replace
+        """
+        print("Valid geometry names:")
+        model = self._mj_model
+        for geom_id in range(model.ngeom):
+            geom_name = mj.mj_id2name(model, mj.mjtObj.mjOBJ_GEOM, geom_id)
+            geom_pos = self._mj_model.geom(geom_name).pos
+            print(f"Geom ID {geom_id}: {geom_name},\n Position: {geom_pos}")
+        # for geom in self._mj_model:
+        #     print(geom)
+    def get_valid_geometry_names(self):
+        """
+        Return a list of all valid geometry names in the MuJoCo model.
+        """
+        return [mj.mj_id2name(self._mj_model, mj.mjtObj.mjOBJ_GEOM, geom_id) for geom_id in range(self._mj_model.ngeom)]
 def convert_mj_struct_to_namedtuple(mj_struct):
     """
     convert a mujoco struct to a dictionary

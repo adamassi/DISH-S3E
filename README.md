@@ -35,6 +35,9 @@ python setup.py
 test for change object location
 python test.py
 
+test for the noraml
+python test_for_noraml.py
+
 python sim_testing.py
 
 
