@@ -7,8 +7,10 @@
     <worldbody>
         <body name="object">
             <!-- <freejoint name="object_fj"/> Free joint for movement -->
-            <geom pos="0 0 0" mesh="plate_mesh" type="mesh" euler="1.5708 0 0" solimp="0.97 0.97 0.003" solref="0.01 1"
-                  friction="0.7 0.005 0.005" material="glass" group="1" mass="0.3" contype="1" conaffinity="1"/>
+
+            <geom pos="0 0 0" mesh="plate_mesh" type="mesh" euler="1.5708 0 0" solimp="0.998 0.998 0.001" solref="0.001 1" density="50"
+                  friction="0.95 0.3 0.1" material="glass" group="0" condim="4"/>
+
             <!-- <geom pos="0 0 0" mesh="plate_mesh" type="mesh" euler="1.5708 0 0" solimp="0.998 0.998 0.001" solref="0.001 1" density="50"
                   friction="0.95 0.3 0.1" material="glass" group="0"/> -->
         </body>
