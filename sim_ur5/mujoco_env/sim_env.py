@@ -307,13 +307,11 @@ class SimEnv:
 
         if geom1 not in geom_names or geom2 not in geom_names:
             raise ValueError(f"Geometry '{geom1}' does not exist in the model.")
-        self.update_object_position("dish1_fj", [0.5, 0, 1])
-        # Extract geometry names if geom1 and geom2 are objects
-        geom1_name = geom1.name if hasattr(geom1, 'name') else geom1
-        geom2_name = geom2.name if hasattr(geom2, 'name') else geom2
+        # self.update_object_position("dish1_fj", [0.5, 0, 1])
+        self.simulate_steps(10)
 
         # Get contacts and directions
-        geom_contacts, geom_contact_dirs = self.get_contacts(geom1_name, geom2_name)
+        geom_contacts, geom_contact_dirs = self.get_contacts(geom1, geom2)
 
         if not geom_contacts:
             return np.array([0, 0, 0])

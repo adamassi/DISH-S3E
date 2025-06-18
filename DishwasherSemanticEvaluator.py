@@ -20,6 +20,13 @@ class DishwasherSemanticEvaluator:
         # TODO : Initialize MAX_DISHES based on the capacity of the dishwasher
         self.env.num_dishs = 6  # Example capacity, can be adjusted based on the environment
 
+    """
+    Valid names for is stable: 
+    ['Dishwasher/door', 'Dishwasher/top_rack', 'can/dish4_fj/',
+    'dish0_fj', 'dish1_fj', 'dish2_fj', 'dish3_fj', 'plate/dish5_fj/',
+    'plate_1/dish6_fj/', 'rethink_mount_stationary/robot_0_ur5e/elbow_joint',
+    'rethink_mount_stationary/robot_0_ur5e/shoulder_lift_joint', 'rethink_mount_stationary/robot_0_ur5e/shoulder_pan_joint', 'rethink_mount_stationary/robot_0_ur5e/wrist_1_joint', 'rethink_mount_stationary/robot_0_ur5e/wrist_2_joint', 'rethink_mount_stationary/robot_0_ur5e/wrist_3_joint']"
+    """
     def is_stable(self, dish_name: str) -> bool:
         """
         Checks if a dish is placed stably on a surface by comparing its height

@@ -66,24 +66,24 @@ state = env.get_state()
 
 
 
-geom1 = "plate//unnamed_geom_0"  # Geometry name as a string
-geom2 = "table_black_top"      # Geometry name as a string
+# geom1 = "plate//unnamed_geom_0"  # Geometry name as a string
+# geom2 = "table_black_top"      # Geometry name as a string
 
-# Debugging: Print the geometry names
-print(f"geom1: {geom1}")
-print(f"geom2: {geom2}")
+# # Debugging: Print the geometry names
+# print(f"geom1: {geom1}")
+# print(f"geom2: {geom2}")
 
-# Ensure the geometry names are valid
-if geom1 not in env.get_valid_geometry_names() or geom2 not in env.get_valid_geometry_names():
-    raise ValueError(f"One or both geometries '{geom1}' or '{geom2}' do not exist in the model.")
+# # Ensure the geometry names are valid
+# if geom1 not in env.get_valid_geometry_names() or geom2 not in env.get_valid_geometry_names():
+#     raise ValueError(f"One or both geometries '{geom1}' or '{geom2}' do not exist in the model.")
 
-# Call get_normal_force
-normal_force = env.get_normal_force(geom2, geom1)
-print(f"Normal force applied by {geom2} on {geom1}: {normal_force}")
-normal_force = env.get_normal_force(geom1, geom2)
-print(f"Normal force applied by {geom1} on {geom2}: {normal_force}")
-normal_force = env.get_normal_force(geom1, geom1)
-print(f"Normal force applied by {geom1} on itself: {normal_force}")
+# # Call get_normal_force
+# normal_force = env.get_normal_force(geom2, geom1)
+# print(f"Normal force applied by {geom2} on {geom1}: {normal_force}")
+# normal_force = env.get_normal_force(geom1, geom2)
+# print(f"Normal force applied by {geom1} on {geom2}: {normal_force}")
+# normal_force = env.get_normal_force(geom1, geom1)
+# print(f"Normal force applied by {geom1} on itself: {normal_force}")
 
 
 # Replace these with the actual geometry names or objects
@@ -96,21 +96,32 @@ print(f"Normal force applied by {geom2} on {geom1}: {normal_force}")
 normal_force = env.get_normal_force(geom1, geom2)
 print(f"Normal force applied by {geom1} on {geom2}: {normal_force}")
 normal_force = env.get_normal_force(geom1, geom1)
-print(f"Normal force applied by {geom1} on itself: {normal_force}")
+# print(f"Normal force applied by {geom1} on itself: {normal_force}")
 
-
-
-
-geom1 = "plate//unnamed_geom_0"  # Geometry name as a string
-geom2 = "Dishwasher//unnamed_geom_1"      # Geometry name as a string
+# Replace these with the actual geometry names or objects
+geom1 = "can//unnamed_geom_0"  # Geometry name as a string
+geom2 = "table_white_top"      # Geometry name as a string
 
 # Call get_normal_force
 normal_force = env.get_normal_force(geom2, geom1)
 print(f"Normal force applied by {geom2} on {geom1}: {normal_force}")
-normal_force = env.get_normal_force(geom1, geom2)
-print(f"Normal force applied by {geom1} on {geom2}: {normal_force}")
-normal_force = env.get_normal_force(geom1, geom1)
-print(f"Normal force applied by {geom1} on itself: {normal_force}")
+
+
+
+
+
+
+
+# geom1 = "plate//unnamed_geom_0"  # Geometry name as a string
+# geom2 = "Dishwasher//unnamed_geom_1"      # Geometry name as a string
+
+# # Call get_normal_force
+# normal_force = env.get_normal_force(geom2, geom1)
+# print(f"Normal force applied by {geom2} on {geom1}: {normal_force}")
+# normal_force = env.get_normal_force(geom1, geom2)
+# print(f"Normal force applied by {geom1} on {geom2}: {normal_force}")
+# normal_force = env.get_normal_force(geom1, geom1)
+# print(f"Normal force applied by {geom1} on itself: {normal_force}")
 
 
 
