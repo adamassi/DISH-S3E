@@ -29,13 +29,16 @@ class DishwasherSemanticEvaluator:
     """
     def is_stable(self, dish_name: str) -> bool:
         """
-        Checks if a dish is placed stably on a surface by comparing its height
-        to the expected surface height at that position.
+        Checks if a dish is placed stably on a surface by checking its orientation.
+
+        Args:
+            dish_name: The name of the dish to check.
+
+        Returns:
+            True if the dish is stable, False otherwise.
         """
-        pos = self.env._object_manager.get_object_pos(dish_name)
-        height = pos[2]
-        nearby_dishes_height = self.env.get_tower_height_at_point(pos[:2])
-        return abs(height - nearby_dishes_height) < 0.01
+        # Use the is_stable_orientation method from the environment
+        return self.env.is_stable_orientation(dish_name)
 
     def has_space(self) -> bool:
         """
