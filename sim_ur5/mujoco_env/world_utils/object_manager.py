@@ -165,6 +165,16 @@ class ObjectManager:
             joint_name= f"knife/dish{dish_id}_fj/"
         elif dish_id == 14:
             joint_name = f"knife_1/dish{dish_id}_fj/"
+        elif dish_id == 15:
+            joint_name = f"wine_glass/dish{dish_id}_fj/"
+        elif dish_id == 16:
+            joint_name = f"wine_glass_1/dish{dish_id}_fj/"
+        elif dish_id == 17:
+            joint_name = f"wine_glass_2/dish{dish_id}_fj/"
+        elif dish_id == 18:
+            joint_name = f"wine_glass_3/dish{dish_id}_fj/"
+        elif dish_id == 19:
+            joint_name = f"cup/dish{dish_id}_fj/"
         else:
             joint_name = f"dish{dish_id}_fj"
         

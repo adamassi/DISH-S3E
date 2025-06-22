@@ -27,7 +27,11 @@ sceneHouseTableWorld = SceneSpec(
         ObjectSpec('wooden_fork', base_pos=[0.8, 0.6, 0.25], base_joints=(JointSpec('free',attrs={'name': 'dish12_fj'}),),),  # Wooden fork object
         ObjectSpec('knife', base_pos=[0.7, 0.6, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish13_fj'}),),),  # Knife object
         ObjectSpec('knife', base_pos=[0.8, 0.6, 0.35], base_joints=(JointSpec('free',attrs={'name': 'dish14_fj'}),),),  # Knife object
-
+        ObjectSpec('wine_glass', base_pos=[-0.1, 0.7, 0.25], base_joints=(JointSpec('free',attrs={'name': 'dish15_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Wine glass object
+        ObjectSpec('wine_glass', base_pos=[0.2, 0.7, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish16_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Wine glass object
+        ObjectSpec('wine_glass', base_pos=[0.1, 0.7, 0.2], base_joints=(JointSpec('free',attrs={'name': 'dish17_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Wine glass object
+        ObjectSpec('wine_glass', base_pos=[0., 0.7, 0.1], base_joints=(JointSpec('free',attrs={'name': 'dish18_fj'}),),base_rot=[1.57079632679, 0, 0]),  # Wine glass object
+        ObjectSpec('cup', base_pos=[0.6, -0.1, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish19_fj'}),),),  # Cup object
 
 
         
