@@ -28,13 +28,74 @@
         <geom type="box" pos="0 0.071 .378" size=".290 .0710 .378" class="col"/> <!-- back -->
 
         <!-- Uncomment this section for the bottom rack -->
-        <!--
-        <body name="bottom_rack" pos="0 0.225 -0.375">
+        
+        <!-- <body name="bottom_rack" pos="0 0.225 -0.375">
             <inertial pos="0 0 0" mass="2" diaginertia="1 1 1" />
             <joint name="bottom_rack" pos="0 0 0" axis="0 0 -1" type="slide" limited="true" range="0 0.274" damping="0.01" frictionloss="0.01" />
-            <geom type="mesh" mesh="ktc_dishwasher_rack" />
+            <geom type="mesh" mesh="ktc_dishwasher_rack" euler="1.57 0 0" contype="0" conaffinity="0"/>
+        </body> -->
+
+        
+        <body name="bottom_rack" pos="0 0.375 0.225">
+            <inertial pos="0 0 0" mass="2" diaginertia="1 1 1" />
+            <joint name="bottom_rack" pos="0 0 0" axis="0 1 0" type="slide" limited="true" range="0 0.274" damping="0.01" frictionloss="0.01" />
+            
+            <!-- Visual mesh -->
+            <geom type="mesh" mesh="ktc_dishwasher_rack" euler="1.57 0 0" contype="0" conaffinity="0"/>
+
+            <!-- Collision geoms -->
+            <geom type="box" pos="0 0 -0.06" size="0.2 0.2 0.001" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="-0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            
+
+            <!-- Optional front/back rails -->
+            <geom type="box" pos="0 0.20 0.0" size="0.20 0.001 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0 -0.20 0.0" size="0.20 0.001 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+
+            <!-- center rails-->
+            <!-- <geom type="box" pos="-0.15 0 0" size="0.001 0.2 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="-0.10 0 0" size="0.001 0.2 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="-0.05 0 0" size="0.001 0.2 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+
+            <geom type="box" pos="0. 0 0" size="0.001 0.2 0.035" rgba="1 0 1 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.03 0 0" size="0.001 0.2 0.035" rgba="1 1 0 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.06 0 0" size="0.001 0.2 0.035" rgba="1 1 0 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.09 0 0" size="0.001 0.2 0.035" rgba="1 1 0 1" contype="1" conaffinity="1"/>
+
+             -->
+            <!-- cups -->
+            <geom type="box" pos="-0.1 0 -0.02" size="0.001 0.2 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.0 0 -0.02" size="0.001 0.2 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            
+            <!-- spoons -->
+            <geom type="box" pos="0 0 -0.02" size="0.001 0.2 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.11 0 -0.02" size="0.001 0.2 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.14 0 -0.02" size="0.001 0.2 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.17 0 -0.02" size="0.001 0.2 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+
+
+            <!-- slots -->
+            <geom type="box" pos="0.155 0.174 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 0.142 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 0.11 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 0.08 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 0.05 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 0.02 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 -0.01 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 -0.04 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 -0.075 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 -0.106 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 -0.137 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 -0.168 -0.02" size="0.045 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            
+            <!-- cups - -->
+            <geom type="box" pos="-0.045 0.1 -0.02" size="0.1550 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="-0.045 0 -0.02" size="0.1550 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            <geom type="box" pos="-0.045 -0.1 -0.02" size="0.1550 0.002 0.035" rgba="0.5 0.5 0.5 1" contype="1" conaffinity="1"/>
+            
         </body>
-        -->
+       
 
         <!-- Top rack of the dishwasher -->
         <body name="top_rack" pos="0 0.375 0.485">
@@ -57,6 +118,12 @@
             <!-- Side rails: placed near the left/right edges, taller and wider -->
             <geom type="box" pos="0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> <!-- Left rail -->
             <geom type="box" pos="-0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> <!-- Right rail -->
+
+            <!-- center rails-->
+            <geom type="box" pos="0.05 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> <!-- Right rail -->
+            <geom type="box" pos="-0.05 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> <!-- Right rail -->
+            
+
 
             <!-- Optional front/back rails -->
             <geom type="box" pos="0 0.20 0.0" size="0.20 0.001 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>

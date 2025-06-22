@@ -33,7 +33,6 @@ env.reset(randomize=False, dish_positions=dishs_position)
 #executor.pick_up("ur5e_2", -0.6, -0.5, 0.03)
 
 
-
 # Open the dishwasher door
 door_joint_name = "Dishwasher/door"  # Correct joint name
 door_open_position = -1.5  # Fully open position (in radians)
@@ -51,16 +50,48 @@ executor.wait(1000)
 
 
 
-# Slide out the dishwasher rack
-rack_joint_name = "Dishwasher/top_rack"  # Correct joint name
-rack_slide_position = 0.274  # Slide almost fully out (range is 0 to 0.274)
+# # Slide out the dishwasher rack
+# rack_joint_name = "Dishwasher/top_rack"  # Correct joint name
+# rack_slide_position = 0.274  # Slide almost fully out (range is 0 to 0.274)
 
-# Set the joint position
-env._mj_data.joint(rack_joint_name).qpos[0] = rack_slide_position
+# # Set the joint position
+# env._mj_data.joint(rack_joint_name).qpos[0] = rack_slide_position
 
-# Pass the current joint positions to the step method
-current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
-env.step(current_joint_positions)  # Step the simulation to apply the change
+# # Pass the current joint positions to the step method
+# current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+# env.step(current_joint_positions)  # Step the simulation to apply the change
+
+
+# Slide out the dishwasher rack slowly
+rack_joint_name = "Dishwasher/bottom_rack"
+rack_start_position = env._mj_data.joint(rack_joint_name).qpos[0]
+rack_end_position = 0.274
+num_steps = 50  # Increase for smoother/slower motion
+
+for i in range(1, num_steps + 1):
+    # Linear interpolation between start and end
+    rack_position = rack_start_position + (rack_end_position - rack_start_position) * (i / num_steps)
+    env._mj_data.joint(rack_joint_name).qpos[0] = rack_position
+    current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+    env.step(current_joint_positions)
+    time.sleep(0.01)  # Adjust for speed (optional)
+
+
+
+
+# # Slide out the dishwasher rack slowly
+# rack_joint_name = "Dishwasher/top_rack"
+# rack_start_position = env._mj_data.joint(rack_joint_name).qpos[0]
+# rack_end_position = 0.274
+# num_steps = 50  # Increase for smoother/slower motion
+
+# for i in range(1, num_steps + 1):
+#     # Linear interpolation between start and end
+#     rack_position = rack_start_position + (rack_end_position - rack_start_position) * (i / num_steps)
+#     env._mj_data.joint(rack_joint_name).qpos[0] = rack_position
+#     current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+#     env.step(current_joint_positions)
+#     time.sleep(0.01)  # Adjust for speed (optional)
 
 
 
@@ -98,9 +129,7 @@ geom2 = "table_black_top"      # Geometry name as a string
 normal_force = env.get_normal_force(geom2, geom1)
 print(f"Normal force applied by {geom1} on {geom2}: {normal_force}")
 
-
-
-
+executor.wait(1000)
 
 
 
