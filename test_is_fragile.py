@@ -36,19 +36,20 @@ env.reset(randomize=False, dish_positions=dishs_position)
 
 # Create an instance of DishwasherSemanticEvaluator
 evaluator = DishwasherSemanticEvaluator(env)
-def test_fragile_dish(self):
+def test_fragile_dish():
     # Test for fragile dishes
     fragile_dishes = ["glass_cup", "fragile_plate", "glass_bowl"]
     for dish in fragile_dishes:
-            if self.evaluator.is_fragile(dish):
+            if evaluator.is_fragile(dish):
                 print(f"The dish '{dish}' is fragile.")
             else:
                  return False
     return True
 
 print("Testing fragile dishes:")
-test_result = evaluator.test_fragile_dish() 
-print(f"Test result for fragile dishes: {test_result}")
+test_result = test_fragile_dish()
+print(f"Test result for fragile dishes: {test_result}") 
+
 
 
 
