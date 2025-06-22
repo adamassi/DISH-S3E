@@ -1,6 +1,6 @@
 <mujoco model="knife">
     <asset>
-        <mesh file="meshes/uploads_files_2565710_knife6.obj" name="knife_mesh" scale="0.01 0.01 0.01"/>
+        <mesh file="meshes/uploads_files_2565710_knife6.obj" name="knife_mesh" scale="0.005 0.005 0.005"/>
         <texture type="2d" file="textures/ceramic.png" name="tex-wood"/>
         <material name="wood" reflectance="0.5" texrepeat="5 5" texture="tex-wood" texuniform="true"/>
     </asset>
