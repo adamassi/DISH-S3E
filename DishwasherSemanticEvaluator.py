@@ -21,29 +21,55 @@ class DishwasherSemanticEvaluator:
         self.env.num_dishs = 6  # Example capacity, can be adjusted based on the environment
 
     """
-    Valid names for is stable: 
-    ['Dishwasher/door', 'Dishwasher/top_rack', 'can/dish4_fj/',
-    'dish0_fj', 'dish1_fj', 'dish2_fj', 'dish3_fj', 'plate/dish5_fj/',
-    'plate_1/dish6_fj/', 'rethink_mount_stationary/robot_0_ur5e/elbow_joint',
-    'rethink_mount_stationary/robot_0_ur5e/shoulder_lift_joint', 'rethink_mount_stationary/robot_0_ur5e/shoulder_pan_joint', 'rethink_mount_stationary/robot_0_ur5e/wrist_1_joint', 'rethink_mount_stationary/robot_0_ur5e/wrist_2_joint', 'rethink_mount_stationary/robot_0_ur5e/wrist_3_joint']"
+    Valid names to use for the is_stable method:
+    ['Dishwasher/', 'Dishwasher//unnamed_body_0', 'Dishwasher/dishwasher', 'Dishwasher/door', 'Dishwasher/top_rack', 
+    'bin_dark_wood/', 'bin_dark_wood/bin_dark_wood', 'can/', 'can/object', 'dish0', 'dish1', 'dish2', 'dish3', 
+    'plate/', 'plate/object', 'plate_1/', 'plate_1/object', 'rethink_mount_stationary/', 
+    'rethink_mount_stationary/base', 'rethink_mount_stationary/controller_box', 'rethink_mount_stationary/pedestal', 
+    'rethink_mount_stationary/pedestal_feet', 'rethink_mount_stationary/robot_0_ur5e/', 
+    'rethink_mount_stationary/robot_0_ur5e/base', 'rethink_mount_stationary/robot_0_ur5e/forearm_link', 
+    'rethink_mount_stationary/robot_0_ur5e/robot_0_adhesive gripper/', 
+    'rethink_mount_stationary/robot_0_ur5e/robot_0_adhesive gripper/4boxes', 
+    'rethink_mount_stationary/robot_0_ur5e/shoulder_link', 'rethink_mount_stationary/robot_0_ur5e/upper_arm_link', 
+    'rethink_mount_stationary/robot_0_ur5e/wrist_1_link', 'rethink_mount_stationary/robot_0_ur5e/wrist_2_link', 
+    'rethink_mount_stationary/robot_0_ur5e/wrist_3_link', 'rethink_mount_stationary/torso', 'table_black', 
+    'table_wood', 'tale_white', 'world']
+    **'plate/', 'plate/object': These are the names of the same plate object in the environment.
     """
     def is_stable(self, dish_name: str) -> bool:
         """
-        Checks if a dish is placed stably on a surface by comparing its height
-        to the expected surface height at that position.
+        Checks if a dish is placed stably on a surface by checking its orientation.
+
+        Args:
+            dish_name: The name of the dish to check.
+
+        Returns:
+            True if the dish is stable, False otherwise.
         """
-        pos = self.env._object_manager.get_object_pos(dish_name)
-        height = pos[2]
-        nearby_dishes_height = self.env.get_tower_height_at_point(pos[:2])
-        return abs(height - nearby_dishes_height) < 0.01
+        # Use the is_stable_orientation method from the environment
+        return self.env.is_stable_orientation(dish_name)
 
     def has_space(self) -> bool:
         """
         Checks if there's still available space in the dishwasher.
         This is based on how many dishes are already placed in a defined region.
+
+        x_limit for the top rack when it is closed:
+        x_min = 0.6 - 0.229 = 0.371
+        x_max = 0.6 + 0.229 = 0.829
+        Midpoint is:
+            x = 0.6 + 0     = 0.6
+            y = -1  + 0.375 = -0.625
+            z = 0.0 + 0.485 = 0.485
+        y_limit is:
+        y_min = -0.625 - 0.2075 = -0.8325
+        y_max = -0.625 + 0.2075 = -0.4175
         """
+        # Count the number of dishes in the upper rack (y > 0.5)
         occupied = len([d for d in self.env._object_manager.object_names
                         if self.env._object_manager.get_object_pos(d)[1] > 0.5])
+        
+        # Check if the number of dishes is less than the maximum capacity
         return occupied < self.env.num_dishs
 
     def is_fragile(self, dish_name: str) -> bool:

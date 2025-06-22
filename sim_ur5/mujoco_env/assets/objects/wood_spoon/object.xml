@@ -1,0 +1,18 @@
+<mujoco model="wood_spoon">
+    <asset>
+        <mesh file="meshes/WoodenSpoon.obj" name="woodspoon_mesh" scale="0.02 0.02 0.02"/>
+        <texture type="2d" file="textures/WoodenSpoonAlbedo.png" name="tex-wood"/>
+        <material name="wood" reflectance="0.5" texrepeat="5 5" texture="tex-wood" texuniform="true"/>
+    </asset>
+    <worldbody>
+        <body name="object">
+            <!-- <freejoint name="object_fj"/> Free joint for movement -->
+
+            <geom pos="0 0 0" mesh="woodspoon_mesh" type="mesh" euler="1.5708 0 0" solimp="0.998 0.998 0.001" solref="0.001 1" density="50"
+                  friction="0.95 0.3 0.1" material="wood" group="0" condim="4"/>
+
+            <!-- <geom pos="0 0 0" mesh="plate_mesh" type="mesh" euler="1.5708 0 0" solimp="0.998 0.998 0.001" solref="0.001 1" density="50"
+                  friction="0.95 0.3 0.1" material="glass" group="0"/> -->
+        </body>
+    </worldbody>
+</mujoco>

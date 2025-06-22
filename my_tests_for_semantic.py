@@ -38,12 +38,30 @@ env.reset(randomize=False, dish_positions=dishs_position)
 evaluator = DishwasherSemanticEvaluator(env)
 
 # Specify the dish name to check stability
-dish_name = "dish0_fj"  # Replace with the actual dish name in your environment
+"""
+    Valid names to use for the is_stable method:
+    ['Dishwasher/', 'Dishwasher//unnamed_body_0', 'Dishwasher/dishwasher',
+    'Dishwasher/door', 'Dishwasher/top_rack', 'bin_dark_wood/','dish1',
+    'bin_dark_wood/bin_dark_wood', 'can/', 'can/object', 'dish0',
+    'dish2', 'dish3', 'plate/', 'plate/object', 'plate_1/', 'plate_1/object']
+"""
+dish_name = "dish0"  # Replace with the actual dish name in your environment
 
 # Call the is_stable method
 is_stable_result = evaluator.is_stable(dish_name)
 
 # Print the result
 print(f"Is the dish '{dish_name}' stable? {is_stable_result}")
+
+dish_name = "Dishwasher/dishwasher"  # Replace with the actual dish name in your environment
+is_stable_result = evaluator.is_stable(dish_name)
+print(f"Is the dishwasher stable? {is_stable_result}")
+
+dish_name = "plate/"
+is_stable_result = evaluator.is_stable(dish_name)
+print(f"Is the plate stable? {is_stable_result}")
+dish_name = "plate/object"
+is_stable_result = evaluator.is_stable(dish_name)   
+print(f"Is the plate/object stable? {is_stable_result}")
 
 executor.wait(1000)

@@ -105,6 +105,13 @@ geom2 = "table_white_top"      # Geometry name as a string
 # Call get_normal_force
 normal_force = env.get_normal_force(geom2, geom1)
 print(f"Normal force applied by {geom2} on {geom1}: {normal_force}")
+geom1 = "can/"
+print("force applied on {geom1} ")
+is_stable = env.is_stable_orientation(geom1)
+print(f"Is {geom1} stable? {is_stable}")
+# normal_force = env.get_force_on_geom(geom1)
+# print(f"Force applied on {geom1}: {normal_force}")
+
 
 
 

@@ -14,6 +14,25 @@ class ObjectManager:
         all_joint_names = [self._mj_model.joint(i).name for i in range(self._mj_model.njnt)]
         #prinr all joint names
         print(f"AAAAAAAAAAAAAAAAAAAAAAAAAAAAall_joint_names: {all_joint_names}")
+        # Step 1: Get the body ID of the top rack
+        body_id = self._mj_model.body("Dishwasher/top_rack").id
+
+        # Step 2: Find all geoms that belong to that body
+        geom_ids = [
+            i for i in range(self._mj_model.ngeom)
+            if self._mj_model.geom_bodyid[i] == body_id
+        ]
+
+        # Step 3: Get their sizes
+        sizes = [self._mj_model.geom_size[i] for i in geom_ids]
+
+        # Print the result
+        for i, size in zip(geom_ids, sizes):
+            name = self._mj_model.geom(i).name
+            print(f"Geom {i} (name: {name}) size: {size}")
+
+
+
         #itorat over all joint names if start with dish icremant counter if name starts with can rename and increment counter
         # dish_counter = 0
         # for name in all_joint_names:
@@ -29,7 +48,7 @@ class ObjectManager:
 
                 
         # all bodies that ends with 
-        self.object_names = [name for name in all_joint_names if name.startswith("dish") or name.startswith("can") or name.startswith("plate")]
+        self.object_names = [name for name in all_joint_names if name.startswith("dish") or name.startswith("can") or name.startswith("plate") or name.startswith("wood_spoon")]
         print(f"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBobject_names:                                     {self.object_names}")
         self.objects_mjdata_dict = {name: self._mj_model.joint(name) for name in self.object_names}
         self.initial_positions_dict = self.get_all_dish_positions()
@@ -130,6 +149,22 @@ class ObjectManager:
             joint_name = f"plate/dish{dish_id}_fj/"
         elif dish_id == 6:
             joint_name = f"plate_1/dish{dish_id}_fj/"
+        elif dish_id == 7:
+            joint_name = f"wood_spoon/dish{dish_id}_fj/"
+        elif dish_id == 8:
+            joint_name = f"wood_spoon_1/dish{dish_id}_fj/"
+        elif dish_id == 9:
+            joint_name = f"wood_spoon_2/dish{dish_id}_fj/"
+        elif dish_id == 10:
+            joint_name = f"wood_spoon_3/dish{dish_id}_fj/"
+        elif dish_id == 11:
+            joint_name = f"wooden_fork/dish{dish_id}_fj/"
+        elif dish_id == 12:
+            joint_name = f"wooden_fork_1/dish{dish_id}_fj/"
+        elif dish_id == 13:
+            joint_name= f"knife/dish{dish_id}_fj/"
+        elif dish_id == 14:
+            joint_name = f"knife_1/dish{dish_id}_fj/"
         else:
             joint_name = f"dish{dish_id}_fj"
         
