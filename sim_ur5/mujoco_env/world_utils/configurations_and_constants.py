@@ -31,7 +31,18 @@ sceneHouseTableWorld = SceneSpec(
         ObjectSpec('wine_glass', base_pos=[0.2, 0.7, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish16_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Wine glass object
         ObjectSpec('wine_glass', base_pos=[0.1, 0.7, 0.2], base_joints=(JointSpec('free',attrs={'name': 'dish17_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Wine glass object
         ObjectSpec('wine_glass', base_pos=[0., 0.7, 0.1], base_joints=(JointSpec('free',attrs={'name': 'dish18_fj'}),),base_rot=[1.57079632679, 0, 0]),  # Wine glass object
-        ObjectSpec('cup', base_pos=[0.6, -0.1, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish19_fj'}),),),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.05], base_joints=(JointSpec('free',attrs={'name': 'dish19_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.35], base_joints=(JointSpec('free',attrs={'name': 'dish20_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.2], base_joints=(JointSpec('free',attrs={'name': 'dish21_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[0.1, 0.5, 0.05], base_joints=(JointSpec('free',attrs={'name': 'dish22_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[0.1, 0.5, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish23_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[0., 0.5, 0.], base_joints=(JointSpec('free',attrs={'name': 'dish24_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[-0.2, 0.5, 0.05], base_joints=(JointSpec('free',attrs={'name': 'dish25_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[-0.2, 0.5, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish26_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[-0.2, 0.5, 0.3], base_joints=(JointSpec('free',attrs={'name': 'dish27_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[-0.1, 0.5, 0.05], base_joints=(JointSpec('free',attrs={'name': 'dish28_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[-0.1, 0.5, 0.2], base_joints=(JointSpec('free',attrs={'name': 'dish29_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[-0.1, 0.5, 0.35], base_joints=(JointSpec('free',attrs={'name': 'dish30_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
 
 
         
@@ -41,6 +52,7 @@ sceneHouseTableWorld = SceneSpec(
     render_camera='top-right',  # Camera used for rendering
     init_keyframe='home'  # Initial keyframe for the scene
 )
+
 
 # Configuration for the MuJoCo environment with one UR5e robot
 muj_env_config = dict(

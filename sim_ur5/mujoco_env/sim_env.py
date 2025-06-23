@@ -10,6 +10,8 @@ from sim_ur5.mujoco_env.world_utils.grasp_manager import GraspManager
 from sim_ur5.mujoco_env.world_utils.configurations_and_constants import *
 from sim_ur5.utils.logging_util import setup_logging
 import logging
+from scipy.spatial.transform import Rotation as R
+import time
 
 
 class SimEnv:
@@ -413,6 +415,45 @@ class SimEnv:
         angle_deg = np.degrees(angle_rad)
         print(f"Angle between local Z and world Z for {object_name}: {angle_deg} degrees")
         return angle_deg < tolerance
+    def place_object_in_dishwasher(self, object_name, new_position):
+        """
+        Update the position and rotation of an object in the dishwasher to make it upright.
+
+        Args:
+            object_name: The name of the object to update.
+            new_position: A list [x, y, z] specifying the new position.
+        """
+       
+        new_rotation_euler = [0, 0, -1.57079632679]
+
+        # Convert Euler angles to quaternion
+        new_rotation_quat = R.from_euler('xyz', new_rotation_euler).as_quat()
+
+        # Get the object's current position and rotation
+        joint_id = self._mj_model.joint(object_name).id
+        pos_adrr = self._mj_model.jnt_qposadr[joint_id]
+        self._mj_data.qpos[pos_adrr:pos_adrr + 3] = [0, 0.9, 0.5]  # Reset position to origin for simplicity
+
+        # Step the simulation to apply the changes
+        self.simulate_steps(10)
+        
+          # Sleep for 30 seconds
+
+        # Update the object's rotation
+        rot_adrr = pos_adrr + 3  # Rotation values start after position
+        self._mj_data.qpos[rot_adrr:rot_adrr + 4] = new_rotation_quat
+        self.simulate_steps(10)
+
+        # time.sleep(3)
+        
+
+        # Update the object's position
+        self._mj_data.qpos[pos_adrr:pos_adrr + 3] = new_position
+
+        # Step the simulation to apply the changes
+        self.simulate_steps(10)
+        time.sleep(3)
+
 def convert_mj_struct_to_namedtuple(mj_struct):
     """
     convert a mujoco struct to a dictionary

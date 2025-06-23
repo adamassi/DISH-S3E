@@ -18,7 +18,8 @@ class DishwasherSemanticEvaluator:
         # Reference to the simulation environment
         self.env = env
         # TODO : Initialize MAX_DISHES based on the capacity of the dishwasher
-        self.env.num_dishs = 6  # Example capacity, can be adjusted based on the environment
+        self.num_dishs_top_rack = 6  # Example capacity, can be adjusted based on the environment
+        self.num_dishs_down_rack = 9  # Example capacity for the down rack, can be adjusted based on the environment
 
     """
     Valid names to use for the is_stable method:
@@ -58,13 +59,43 @@ class DishwasherSemanticEvaluator:
         x_min = 0.6 - 0.229 = 0.371
         x_max = 0.6 + 0.229 = 0.829
         Midpoint is:
-            x = 0.6 + 0     = 0.6
-            y = -1  + 0.375 = -0.625
+            x = 0.6 + 0     = 0.6 
+            y =
             z = 0.0 + 0.485 = 0.485
+        when is closed:
         y_limit is:
         y_min = -0.625 - 0.2075 = -0.8325
         y_max = -0.625 + 0.2075 = -0.4175
+        x_min = 0.4
+        x_max = 0.8
+        y_min = -0.151   
+        y_max = -0.551
+        down rack is:
+        x_min = 0.4
+        x_max = 0.8
+        y_min = -0.151   
+        y_max = -0.551
+        z_min = 0.165
+        z_max = 0.285
         """
+        
+        
+        geom2_name= "Dishwasher/bottom_rack"  # Name of the bottom rack joint
+
+        # Check if the rack is closed
+        # if  self.env._mj_data.joint("Dishwasher/bottom_rack").qpos[0] < 0.1:
+        #     # Check if there is space in the down rack
+        #     down_rack_space = len([
+        #         d for d in self.env._object_manager.object_names
+        #         if 0.4 <= self.env._object_manager.get_object_pos(d)[0] <= 0.8 and
+        #         -0.551 <= self.env._object_manager.get_object_pos(d)[1] <= -0.151 and
+        #         0.165 <= self.env._object_manager.get_object_pos(d)[2] <= 0.285
+        #     ]) 
+        #     # for debugging
+        #     print(f"Down rack space occupied : {down_rack_space}")
+        #     else:
+                
+
         # Count the number of dishes in the upper rack (y > 0.5)
         occupied = len([d for d in self.env._object_manager.object_names
                         if self.env._object_manager.get_object_pos(d)[1] > 0.5])

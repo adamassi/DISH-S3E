@@ -27,10 +27,40 @@ dishs_position = [
    
 
 executor = MotionExecutor(env)
+
 print("waiting for 1 second")
 # Add batterys to the world
 
 env.reset(randomize=False, dish_positions=dishs_position)
+
+
+# Open the dishwasher door
+door_joint_name = "Dishwasher/door"  # Correct joint name
+door_open_position = -1.5  # Fully open position (in radians)
+
+# Set the joint position
+env._mj_data.joint(door_joint_name).qpos[0] = door_open_position
+
+# Pass the current joint positions to the step method
+current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+env.step(current_joint_positions)  # Step the simulation to apply the change
+# Slide out the dishwasher rack slowly
+rack_joint_name = "Dishwasher/bottom_rack"
+rack_start_position = env._mj_data.joint(rack_joint_name).qpos[0]
+rack_end_position = 0.274
+num_steps = 30  # Number of steps for smooth sliding
+for i in range(1, num_steps + 1):
+    # Linear interpolation between start and end
+    rack_position = rack_start_position + (rack_end_position - rack_start_position) * (i / num_steps)
+    env._mj_data.joint(rack_joint_name).qpos[0] = rack_position
+    current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+    env.step(current_joint_positions)
+    time.sleep(0.01)  # Adjust for speed (optional)
+executor.wait(100)
+env.update_object_position('cup_2/dish21_fj/',[0.43,-0.3,0.25])
+executor.wait(40)
+env.update_object_position('cup_1/dish20_fj/',[0.46,-0.22,0.26])
+executor.wait(1000)
 
 
 

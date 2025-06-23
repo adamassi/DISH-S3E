@@ -43,3 +43,9 @@ class TestHasSpace(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+"""Dishwasher//unnamed_geom_7,the Flat base for down rack,
+ Position: [ 0.    0.   -0.06]
+ 
+"""

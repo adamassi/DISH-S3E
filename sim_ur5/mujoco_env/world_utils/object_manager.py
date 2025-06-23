@@ -174,7 +174,11 @@ class ObjectManager:
         elif dish_id == 18:
             joint_name = f"wine_glass_3/dish{dish_id}_fj/"
         elif dish_id == 19:
-            joint_name = f"cup/dish{dish_id}_fj/"
+            joint_name = f"tall_cup/dish{dish_id}_fj/"
+        elif dish_id == 20:
+            joint_name = f"tall_cup_1/dish{dish_id}_fj/"
+        elif dish_id == 21:
+            joint_name = f"tall_cup_2/dish{dish_id}_fj/"
         else:
             joint_name = f"dish{dish_id}_fj"
         
