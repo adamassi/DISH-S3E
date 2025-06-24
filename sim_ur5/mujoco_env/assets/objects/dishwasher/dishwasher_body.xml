@@ -45,7 +45,11 @@
 
             <!-- Collision geoms -->
             <!-- Flat base: wider and thicker -->
-            <geom type="box" pos="0 0 -0.06" size="0.2 0.2 0.001" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <!-- <geom type="box" pos="0 0 -0.06" size="0.2 0.2 0.001" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> -->
+            <geom type="box" pos="-0.045 0 -0.06" size="0.155 0.2 0.001" rgba="1 1 0 0.5" contype="1" conaffinity="1"/>
+            <geom type="box" pos="0.155 0 -0.06" size="0.045 0.2 0.001" rgba="1 0 1 0.5" contype="1" conaffinity="1"/>
+            
+
             <geom type="box" pos="0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
             <geom type="box" pos="-0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
             
