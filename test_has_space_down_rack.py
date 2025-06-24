@@ -61,9 +61,9 @@ positions = [
     [0.6, -0.4, 0.25],  # Dish 2 in the down rack
     [0.7, -0.5, 0.18],  # Dish 3 in the down rack
 ]
-
+evaluator.has_space()
 # env.place_object_in_dishwasher('wood_spoon_3/dish10_fj/', [0.79, -0.5, 0.23])
-env.valid_geometry_names()
+# env.valid_geometry_names()
 geom2_name= 'table_black_top'
 geom1_name='wine_glass//unnamed_geom_0'
 print(f"geom1_name: {geom1_name}, geom2_name: {geom2_name}")
@@ -76,6 +76,7 @@ print(env.get_normal_force(geom1_name, geom2_name))
 # wooden_fork d5lat block in the lift 
 # env.place_object_in_dishwasher('wooden_fork/dish11_fj/', [0.77, -0.18, 0.37]) 
 executor.wait(10)
+# time.sleep(1000)
 
 
 # knife d5lt  block in the right
@@ -128,6 +129,8 @@ for geom_name in geom_names :
         if normal_force[2] not in [0, 0.0]:
             num_cups += 1
 print(f"Number of cups/glasses in the dishwasher: {num_cups}")
+geom2_name='Dishwasher//unnamed_geom_8'
+
 num_skoms = 0
 for geom_name in geom_names :
     if 'spoon' in geom_name.lower() or 'fork' in geom_name.lower() or 'knife' in geom_name.lower():
@@ -149,7 +152,7 @@ down_rack_space = len([
 ]) < env.num_dishs
 
 
-# executor.wait(1000)
+executor.wait(1000)
 
 print("Is there space in the down rack?", down_rack_space)
 

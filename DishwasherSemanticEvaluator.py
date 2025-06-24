@@ -19,8 +19,8 @@ class DishwasherSemanticEvaluator:
         self.env = env
         # TODO : Initialize MAX_DISHES based on the capacity of the dishwasher
         self.num_dishs_top_rack = 6  # Example capacity, can be adjusted based on the environment
-        self.num_dishs_down_rack = 9  # Example capacity for the down rack, can be adjusted based on the environment
-
+        self.num_cups_down_rack = 12  # Example capacity for the down rack, can be adjusted based on the environment
+        self.num_skom_down_rack = 12
     """
     Valid names to use for the is_stable method:
     ['Dishwasher/', 'Dishwasher//unnamed_body_0', 'Dishwasher/dishwasher', 'Dishwasher/door', 'Dishwasher/top_rack', 
@@ -49,7 +49,43 @@ class DishwasherSemanticEvaluator:
         """
         # Use the is_stable_orientation method from the environment
         return self.env.is_stable_orientation(dish_name)
+    def has_space_top_rack(self) -> bool:
+        """
+        Checks if there's still available space in the top rack of the dishwasher.
+        This is based on how many dishes are already placed in the top rack.
 
+        Returns:
+            True if there is space, False otherwise.
+        """
+        # Count the number of dishes in the upper rack (y > 0.5)
+        occupied = len([d for d in self.env._object_manager.object_names
+                        if self.env._object_manager.get_object_pos(d)[1] > 0.5])
+        
+        # Check if the number of dishes is less than the maximum capacity
+        return occupied < self.num_dishs_top_rack
+    def has_space_down_rack(self) -> bool:
+        geom2_name= "Dishwasher//unnamed_geom_7"  
+        geom_names = self.env.get_valid_geometry_names()
+        num_cups = 0
+        for geom_name in geom_names :
+            if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
+                normal_force = self.env.get_normal_force(geom_name, geom2_name)
+                print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+                print(normal_force)
+                if normal_force[2] not in [0, 0.0]:
+                    num_cups += 1
+        print(f"Number of cups/glasses in the dishwasher: {num_cups}")
+        geom2_name='Dishwasher//unnamed_geom_8'
+        num_skoms = 0
+        for geom_name in geom_names :
+            if 'spoon' in geom_name.lower() or 'fork' in geom_name.lower() or 'knife' in geom_name.lower():
+                normal_force = self.env.get_normal_force(geom_name, geom2_name)
+                print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+                print(normal_force)
+                if normal_force[2] not in [0, 0.0]:
+                    num_skoms += 1
+        print(f"Number of spoons/forks/knives in the dishwasher: {num_skoms}")
+        return (num_cups < self.num_cups_down_rack) and (num_skoms < self.num_skom_down_rack)
     def has_space(self) -> bool:
         """
         Checks if there's still available space in the dishwasher.
@@ -79,23 +115,6 @@ class DishwasherSemanticEvaluator:
         z_max = 0.285
         """
         
-        
-        geom2_name= "Dishwasher/bottom_rack"  # Name of the bottom rack joint
-
-        # Check if the rack is closed
-        # if  self.env._mj_data.joint("Dishwasher/bottom_rack").qpos[0] < 0.1:
-        #     # Check if there is space in the down rack
-        #     down_rack_space = len([
-        #         d for d in self.env._object_manager.object_names
-        #         if 0.4 <= self.env._object_manager.get_object_pos(d)[0] <= 0.8 and
-        #         -0.551 <= self.env._object_manager.get_object_pos(d)[1] <= -0.151 and
-        #         0.165 <= self.env._object_manager.get_object_pos(d)[2] <= 0.285
-        #     ]) 
-        #     # for debugging
-        #     print(f"Down rack space occupied : {down_rack_space}")
-        #     else:
-                
-
         # Count the number of dishes in the upper rack (y > 0.5)
         occupied = len([d for d in self.env._object_manager.object_names
                         if self.env._object_manager.get_object_pos(d)[1] > 0.5])

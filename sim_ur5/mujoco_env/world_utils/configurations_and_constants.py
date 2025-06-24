@@ -32,8 +32,8 @@ sceneHouseTableWorld = SceneSpec(
         ObjectSpec('wine_glass', base_pos=[0.1, 0.7, 0.2], base_joints=(JointSpec('free',attrs={'name': 'dish17_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Wine glass object
         ObjectSpec('wine_glass', base_pos=[0., 0.7, 0.1], base_joints=(JointSpec('free',attrs={'name': 'dish18_fj'}),),base_rot=[1.57079632679, 0, 0]),  # Wine glass object
         ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.05], base_joints=(JointSpec('free',attrs={'name': 'dish19_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
-        ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.35], base_joints=(JointSpec('free',attrs={'name': 'dish20_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
-        ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.2], base_joints=(JointSpec('free',attrs={'name': 'dish21_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.2], base_joints=(JointSpec('free',attrs={'name': 'dish20_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.35], base_joints=(JointSpec('free',attrs={'name': 'dish21_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
         ObjectSpec('tall_cup', base_pos=[0.1, 0.5, 0.05], base_joints=(JointSpec('free',attrs={'name': 'dish22_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
         ObjectSpec('tall_cup', base_pos=[0.1, 0.5, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish23_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
         ObjectSpec('tall_cup', base_pos=[0., 0.5, 0.], base_joints=(JointSpec('free',attrs={'name': 'dish24_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object

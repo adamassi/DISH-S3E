@@ -347,7 +347,7 @@ class SimEnv:
         # print(geom_names)
 
         if geom1 not in geom_names or geom2 not in geom_names:
-            raise ValueError(f"Geometry '{geom1}' does not exist in the model.")
+            raise ValueError(f"Geometry '{geom1}' OR '{geom2}' does not exist in the model.")
         # self.update_object_position("dish1_fj", [0.5, 0, 1])
         self.simulate_steps(10)
 
