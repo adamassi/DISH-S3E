@@ -43,6 +43,9 @@ sceneHouseTableWorld = SceneSpec(
         ObjectSpec('tall_cup', base_pos=[-0.1, 0.5, 0.05], base_joints=(JointSpec('free',attrs={'name': 'dish28_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
         ObjectSpec('tall_cup', base_pos=[-0.1, 0.5, 0.2], base_joints=(JointSpec('free',attrs={'name': 'dish29_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
         ObjectSpec('tall_cup', base_pos=[-0.1, 0.5, 0.35], base_joints=(JointSpec('free',attrs={'name': 'dish30_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('spoon', base_pos=[-0.8, 0.4, -0.35], base_joints=(JointSpec('free',attrs={'name': 'dish31_fj'}),),),  # Spoon object
+        ObjectSpec('spoon', base_pos=[1, 0.8, -0.35], base_joints=(JointSpec('free',attrs={'name': 'dish32_fj'}),),),  # Spoon object
+        ObjectSpec('fork', base_pos=[0.8, 0.4, -0.35], base_joints=(JointSpec('free',attrs={'name': 'dish33_fj'}),),),  # Spoon object
 
 
         

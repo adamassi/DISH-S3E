@@ -71,16 +71,25 @@ print(env.get_normal_force(geom1_name, geom2_name))
 geom1_name='tall_cup//unnamed_geom_0'
 print(f"geom1_name: {geom1_name}, geom2_name: {geom2_name}")
 print(env.get_normal_force(geom1_name, geom2_name))
+# env.simulate_steps(10)
 # executor.wait(10)
+# wooden_fork d5lat block in the lift 
+# env.place_object_in_dishwasher('wooden_fork/dish11_fj/', [0.77, -0.18, 0.37]) 
+executor.wait(10)
 
+
+# knife d5lt  block in the right
+env.place_object_in_dishwasher('knife/dish13_fj/', [0.74, -0.15, 0.37])
 executor.wait(30)
-env.place_object_in_dishwasher('wood_spoon_3/dish10_fj/', [0.79, -0.5, 0.23])
-env.place_object_in_dishwasher('knife/dish13_fj/', [0.78, -0.2, 0.37])
+# executor.wait(30)
 env.update_object_position('tall_cup_8/dish27_fj/',[0.45,-0.4,0.25])
 executor.wait(30)
+env.place_object_in_dishwasher('spoon/dish31_fj/', [0.77, -0.18, 0.27])
+executor.wait(30)
+
 env.update_object_position('tall_cup_2/dish21_fj/',[0.43,-0.3,0.25])
 executor.wait(40)
-env.update_object_position('tall_cup_1/dish20_fj/',[0.46,-0.2,0.26])
+env.update_object_position('tall_cup_1/dish20_fj/',[0.43,-0.2,0.26])
 executor.wait(30)
 env.update_object_position('tall_cup_4/dish23_fj/',[0.43,-0.5,0.27])
 executor.wait(60)
@@ -88,7 +97,7 @@ env.update_object_position('tall_cup/dish19_fj/',[0.53,-0.5,0.27])
 executor.wait(30)
 env.update_object_position('wine_glass/dish15_fj/',[0.53,-0.4,0.25])
 executor.wait(30)
-env.place_object_in_dishwasher('wine_glass_1/dish16_fj/',[0.52,-0.3,0.25])
+env.place_object_in_dishwasher('wine_glass_1/dish16_fj/',[0.53,-0.3,0.25])
 executor.wait(30)
 env.update_object_position('wine_glass_2/dish17_fj/',[0.54,-0.2,0.25])
 executor.wait(30)
@@ -107,7 +116,7 @@ geom2_name='Dishwasher//unnamed_geom_7'
 geom1_name='tall_cup_1//unnamed_geom_0'
 print(f"geom1_name: {geom1_name}, geom2_name: {geom2_name}")
 print(env.get_normal_force(geom1_name, geom2_name))
-executor.wait(10)
+# executor.wait(10000)
 
 geom_names = env.get_valid_geometry_names()
 num_cups = 0
@@ -119,6 +128,16 @@ for geom_name in geom_names :
         if normal_force[2] not in [0, 0.0]:
             num_cups += 1
 print(f"Number of cups/glasses in the dishwasher: {num_cups}")
+num_skoms = 0
+for geom_name in geom_names :
+    if 'spoon' in geom_name.lower() or 'fork' in geom_name.lower() or 'knife' in geom_name.lower():
+        normal_force = env.get_normal_force(geom_name, geom2_name)
+        print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+        print(normal_force)
+        if normal_force[2] not in [0, 0.0]:
+            num_skoms += 1
+
+print(f"Number of spoons/forks/knives in the dishwasher: {num_skoms}")
           
 
 # Check if there is space in the down rack

@@ -423,8 +423,10 @@ class SimEnv:
             object_name: The name of the object to update.
             new_position: A list [x, y, z] specifying the new position.
         """
-       
-        new_rotation_euler = [0, 0, -1.57079632679]
+        if object_name.startswith('spoon/'):
+           new_rotation_euler = [0, 0, 1.57079632679]
+        else:
+           new_rotation_euler = [0, 0, -1.57079632679]
 
         # Convert Euler angles to quaternion
         new_rotation_quat = R.from_euler('xyz', new_rotation_euler).as_quat()
@@ -444,7 +446,7 @@ class SimEnv:
         self._mj_data.qpos[rot_adrr:rot_adrr + 4] = new_rotation_quat
         self.simulate_steps(10)
 
-        # time.sleep(3)
+        time.sleep(3)
         
 
         # Update the object's position
@@ -452,7 +454,7 @@ class SimEnv:
 
         # Step the simulation to apply the changes
         self.simulate_steps(10)
-        time.sleep(3)
+        time.sleep(7)
 
 def convert_mj_struct_to_namedtuple(mj_struct):
     """

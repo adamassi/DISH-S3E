@@ -1,0 +1,19 @@
+<mujoco model="fork">
+    <asset>
+        <mesh file="meshes/uploads_files_5958919_Fork.obj" name="fork_mesh" scale="0.025 0.025 0.025"/>
+        <texture type="2d" file="textures/ceramic.png" name="tex-glass"/>
+        <material name="glass" reflectance="0.5" texrepeat="5 5" texture="tex-glass" texuniform="true"/>
+    </asset>
+    <worldbody>
+        <body name="object">
+            <!-- <freejoint name="object_fj"/> Free joint for movement -->
+
+            <geom pos="0 0 0" mesh="fork_mesh" type="mesh" euler="0 0 0" solimp="0.988 0.988 0.001" solref="0.001 1" density="100"
+                  friction="0.95 0.3 0.1" material="glass" group="0" condim="4"/>
+                  
+            <!-- <geom pos="0 0 0" mesh="plate_mesh" type="mesh" euler="1.5708 0 0" solimp="0.998 0.998 0.001" solref="0.001 1" density="50"
+                  friction="0.95 0.3 0.1" material="glass" group="0"/> -->
+        </body>
+    </worldbody>
+
+</mujoco>
