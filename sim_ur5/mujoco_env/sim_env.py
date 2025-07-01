@@ -414,7 +414,8 @@ class SimEnv:
         angle_rad = np.arccos(np.clip(cos_theta, -1.0, 1.0))
         angle_deg = np.degrees(angle_rad)
         print(f"Angle between local Z and world Z for {object_name}: {angle_deg} degrees")
-        return angle_deg < tolerance
+
+        return abs(angle_deg - tolerance)< 1
     def place_object_in_dishwasher(self, object_name, new_position):
         """
         Update the position and rotation of an object in the dishwasher to make it upright.

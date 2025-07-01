@@ -48,6 +48,9 @@ class DishwasherSemanticEvaluator:
             True if the dish is stable, False otherwise.
         """
         # Use the is_stable_orientation method from the environment
+        if "wine_glass" in dish_name.lower() or "tall_cup" in dish_name.lower():
+            # Wine glasses and tall cups are considered fragile and should not be checked for stability
+            return self.env.is_stable_orientation(dish_name, 90)
         return self.env.is_stable_orientation(dish_name)
     def has_space_top_rack(self) -> bool:
         """

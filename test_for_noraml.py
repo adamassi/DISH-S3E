@@ -134,7 +134,8 @@ print(f"Is {geom1} stable? {is_stable}")
 
 executor.wait(1000)
 """
-Valid geometry names:
+.\venv\Scripts\Activate
+:
 Geom ID 0: floor,
  Position: [ 0.   0.  -0.7]
 Geom ID 1: wall_leftcorner_visual,
