@@ -60,12 +60,18 @@ class DishwasherSemanticEvaluator:
         Returns:
             True if there is space, False otherwise.
         """
-        # Count the number of dishes in the upper rack (y > 0.5)
-        occupied = len([d for d in self.env._object_manager.object_names
-                        if self.env._object_manager.get_object_pos(d)[1] > 0.5])
+        gemo2_name = "Dishwasher/top_rack"
+        geom_names = self.env.get_valid_geometry_names()
+        num_dishes = 0
+        for geom_name in geom_names:
+            if 'plate' in geom_name.lower():
+                normal_force = self.env.get_normal_force(geom_name, gemo2_name)
+                # print(f"Normal force on {geom_name} with respect to {gemo2_name}:")
+                # print(normal_force)
+                if normal_force[2] not in [0, 0.0]:
+                    num_dishes += 1
+        return num_dishes < self.num_dishs_top_rack
         
-        # Check if the number of dishes is less than the maximum capacity
-        return occupied < self.num_dishs_top_rack
     def has_space_down_rack(self) -> bool:
         geom2_name= "Dishwasher//unnamed_geom_7"  
         geom_names = self.env.get_valid_geometry_names()
@@ -117,13 +123,14 @@ class DishwasherSemanticEvaluator:
         z_min = 0.165
         z_max = 0.285
         """
+        return  self.has_space_top_rack() and self.has_space_down_rack()
         
-        # Count the number of dishes in the upper rack (y > 0.5)
-        occupied = len([d for d in self.env._object_manager.object_names
-                        if self.env._object_manager.get_object_pos(d)[1] > 0.5])
+        # # Count the number of dishes in the upper rack (y > 0.5)
+        # occupied = len([d for d in self.env._object_manager.object_names
+        #                 if self.env._object_manager.get_object_pos(d)[1] > 0.5])
         
-        # Check if the number of dishes is less than the maximum capacity
-        return occupied < self.env.num_dishs
+        # # Check if the number of dishes is less than the maximum capacity
+        # return occupied < self.env.num_dishs
 
     def is_fragile(self, dish_name: str) -> bool:
         """
