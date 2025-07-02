@@ -102,51 +102,41 @@
 
         <!-- Top rack of the dishwasher -->
         <body name="top_rack" pos="0 0.375 0.485">
-            <!-- <inertial pos="0 0 0" mass="2" diaginertia="1 1 1" />
-            <joint name="top_rack" pos="0 0 0" axis="0 1 0" type="slide" limited="true" range="0 0.274" damping="0.01" frictionloss="0.01" />
-            <geom type="mesh" mesh="ktc_dishwasher_rack" euler="1.57 0 0"/>
-             -->
-
-
             <inertial pos="0 0 0" mass="2" diaginertia="1 1 1" />
             <joint name="top_rack" pos="0 0 0" axis="0 1 0" type="slide" limited="true" range="0 0.274" damping="0.01" frictionloss="0.01" />
             
             <!-- Visual mesh (no collision) -->
-            <geom type="mesh" mesh="ktc_dishwasher_rack" euler="1.57 0 0" contype="0" conaffinity="0"/>
+            <geom name="top_rack_mesh" type="mesh" mesh="ktc_dishwasher_rack" euler="1.57 0 0" contype="0" conaffinity="0"/>
 
             <!-- Collision primitives: base and rails -->
-            <!-- Flat base: wider and thicker -->
-            <geom type="box" pos="0 0 -0.06" size="0.2 0.2 0.001" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <!-- Flat base -->
+            <geom name="top_rack_base" type="box" pos="0 0 -0.06" size="0.2 0.2 0.001" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
 
-            <!-- Side rails: placed near the left/right edges, taller and wider -->
-            <geom type="box" pos="0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> <!-- Left rail -->
-            <geom type="box" pos="-0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> <!-- Right rail -->
+            <!-- Side rails -->
+            <geom name="top_rack_left_rail" type="box" pos="0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_right_rail" type="box" pos="-0.20 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
 
-            <!-- center rails-->
-            <geom type="box" pos="0.05 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> <!-- Right rail -->
-            <geom type="box" pos="-0.05 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/> <!-- Right rail -->
-            
+            <!-- Center rails -->
+            <geom name="top_rack_center_rail_1" type="box" pos="0.05 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_center_rail_2" type="box" pos="-0.05 0 0.0" size="0.001 0.2 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
 
+            <!-- Front/back rails -->
+            <geom name="top_rack_front_rail" type="box" pos="0 0.20 0.0" size="0.20 0.001 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_back_rail" type="box" pos="0 -0.20 0.0" size="0.20 0.001 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
 
-            <!-- Optional front/back rails -->
-            <geom type="box" pos="0 0.20 0.0" size="0.20 0.001 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 -0.20 0.0" size="0.20 0.001 0.06" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-
-            <!-- slots -->
-            <geom type="box" pos="0 0.174 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 0.142 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 0.11 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 0.08 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 0.05 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 0.02 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 -0.01 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 -0.04 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 -0.075 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 -0.106 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 -0.137 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            <geom type="box" pos="0 -0.168 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
-            
-           
+            <!-- Slots -->
+            <geom name="top_rack_slot_1" type="box" pos="0 0.174 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_2" type="box" pos="0 0.142 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_3" type="box" pos="0 0.11 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_4" type="box" pos="0 0.08 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_5" type="box" pos="0 0.05 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_6" type="box" pos="0 0.02 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_7" type="box" pos="0 -0.01 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_8" type="box" pos="0 -0.04 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_9" type="box" pos="0 -0.075 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_10" type="box" pos="0 -0.106 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_11" type="box" pos="0 -0.137 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
+            <geom name="top_rack_slot_12" type="box" pos="0 -0.168 -0.02" size="0.20 0.002 0.035" rgba="1 0 0 0.5" contype="1" conaffinity="1"/>
         </body>
 
         <!-- Door of the dishwasher -->

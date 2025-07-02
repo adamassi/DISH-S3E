@@ -212,7 +212,7 @@ Geom ID 36: plate//unnamed_geom_0,
  Position: [ 1.28856007e-03 -1.13993622e-07  2.85310704e-02]
 Geom ID 37: can//unnamed_geom_0,
  Position: [ 5.89018274e-05 -1.33653727e-04  3.58399591e-04]
-Geom ID 38: Dishwasher//unnamed_geom_0,
+Geom ID 38: cunnamed_geom_0,
  Position: [3.16545299e-05 2.89189034e-01 3.98390607e-01]
 Geom ID 39: Dishwasher//unnamed_geom_1,
  Position: [0.    0.312 0.756]
