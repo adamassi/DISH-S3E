@@ -295,11 +295,90 @@ class DishwasherSemanticEvaluator:
 
         # === Return final state ===
         return np.array(answers, dtype=bool), predicates
+    
+    def success_score(self, state: Tuple[np.ndarray, List[str]], goal: List[str]) -> float:
+        """
+        Computes a score (0–100) that measures how close the current state is to satisfying the goal predicates.
 
-    def success_score(self, state: np.ndarray, goal_predicates: List[str], all_predicates: List[str]) -> float:
+        Args:
+            state: Tuple of (answers_array, predicates_list) from get_state().
+            goal: List of grounded predicates (strings) that define the desired goal state.
+
+        Returns:
+            A float score between 0 and 100.
         """
-        Computes a success score based on how many goal predicates are satisfied.
-        Returns a float between 0 and 1.
-        """
-        success_flags = [(pred in goal_predicates and state[i]) for i, pred in enumerate(all_predicates)]
-        return sum(success_flags) / len(goal_predicates) if goal_predicates else 0.0
+        answers, predicates = state
+
+        # Map from predicate to its boolean value
+        state_dict = dict(zip(predicates, answers))
+
+        # Track per-object score and total weight
+        total_score = 0.0
+        object_scores = []
+        valid_objects = []
+
+        # Precompute slot availability
+        top_rack_has_space = self.has_space_top_rack()
+        bottom_rack_has_space = self.has_space_down_rack()
+
+        for pred in goal:
+            if pred.startswith("CorrectSlot("):
+                # Extract object name and expected slot
+                inside = pred[len("CorrectSlot("):-1]
+                obj_name, expected_slot = [s.strip() for s in inside.split(",")]
+
+                correct_slot_pred = f"CorrectSlot({obj_name}, {expected_slot})"
+                stable_pred = f"IsStable({obj_name})"
+
+                correct_slot = state_dict.get(correct_slot_pred, False)
+
+                # Determine if the correct slot is full
+                if not correct_slot:
+                    if expected_slot == 'plate' and not top_rack_has_space:
+                        continue  # skip object
+                    elif expected_slot == 'cup' and not bottom_rack_has_space:
+                        continue  # skip object
+
+                # Now count it as a valid object
+                valid_objects.append(obj_name)
+
+                if correct_slot:
+                    is_stable = state_dict.get(stable_pred, False)
+                    obj_score = 100 if is_stable else 70  # you can change 70 to any value you want
+                else:
+                    obj_score = 0
+
+                object_scores.append(obj_score)
+
+        # Score per-object (weighted evenly)
+        if valid_objects:
+            total_object_score = sum(object_scores)
+            object_score = total_object_score / len(valid_objects)
+        else:
+            object_score = 0
+
+        # Optional: Add global predicates
+        global_score = 0
+        global_weights = {
+            "HasSpace(top_rack)": 7,
+            "HasSpace(bottom_rack)": 7,
+            "HasSpace(dishwasher)": 6,
+        }
+
+        for pred, weight in global_weights.items():
+            if pred in goal and state_dict.get(pred, False):
+                global_score += weight
+
+        # Final score
+        final_score = object_score * 0.8 + global_score  # 80% object-based, 20% global
+
+        return round(final_score, 2)
+
+
+    # def success_score(self, state: np.ndarray, goal_predicates: List[str], all_predicates: List[str]) -> float:
+    #     """
+    #     Computes a success score based on how many goal predicates are satisfied.
+    #     Returns a float between 0 and 1.
+    #     """
+    #     success_flags = [(pred in goal_predicates and state[i]) for i, pred in enumerate(all_predicates)]
+    #     return sum(success_flags) / len(goal_predicates) if goal_predicates else 0.0
