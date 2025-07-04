@@ -447,7 +447,7 @@ class SimEnv:
         self._mj_data.qpos[rot_adrr:rot_adrr + 4] = new_rotation_quat
         self.simulate_steps(10)
 
-        time.sleep(3)
+        # time.sleep(3)
         
 
         # Update the object's position
@@ -455,7 +455,7 @@ class SimEnv:
 
         # Step the simulation to apply the changes
         self.simulate_steps(10)
-        time.sleep(7)
+        # time.sleep(7)
 
 def convert_mj_struct_to_namedtuple(mj_struct):
     """

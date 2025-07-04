@@ -75,12 +75,12 @@ print(env.get_normal_force(geom1_name, geom2_name))
 # executor.wait(10)
 # wooden_fork d5lat block in the lift 
 # env.place_object_in_dishwasher('wooden_fork/dish11_fj/', [0.77, -0.18, 0.37]) 
-executor.wait(10)
+executor.wait(100)
 # time.sleep(1000)
 
-
+# env.place_object_in_dishwasher('wooden_fork/dish11_fj/', [0.77, -0.18, 0.37]) 
 # knife d5lt  block in the right
-env.place_object_in_dishwasher('knife/dish13_fj/', [0.74, -0.15, 0.37])
+env.place_object_in_dishwasher('knife/dish13_fj/', [0.77, -0.15, 0.37])
 executor.wait(30)
 # executor.wait(30)
 env.update_object_position('tall_cup_8/dish27_fj/',[0.45,-0.4,0.25])

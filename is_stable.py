@@ -8,10 +8,7 @@ from DishwasherSemanticEvaluator import DishwasherSemanticEvaluator
 # Initialize the simulation environment
 env = SimEnv()
 
-"""
-workspace_x_lims = [-0.9, -0.54]
-workspace_y_lims = [-1.0, -0.55]
-"""
+
 
 # Initial positions of dishes and plate
 dishs_position = [   
@@ -73,6 +70,34 @@ print(f"the first wood_spoon is stable: {evaluator.is_stable('wood_spoon/')}")
 for i in range(1,4):
     print(f"the {i+1} wood_spoon is stable: {evaluator.is_stable(f'wood_spoon_{i}/')}")
 
+print(f"first plate is stable: {evaluator.is_stable('plate/')}")
+print(f"the first knife is stable: {evaluator.is_stable('knife/')}")
+# Open the dishwasher door
+door_joint_name = "Dishwasher/door"  # Correct joint name
+door_open_position = -1.5  # Fully open position (in radians)
+
+# Set the joint position
+env._mj_data.joint(door_joint_name).qpos[0] = door_open_position
+
+# Pass the current joint positions to the step method
+current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+env.step(current_joint_positions)  # Step the simulation to apply the change
+
+# Slide out the dishwasher rack slowly
+rack_joint_name = "Dishwasher/bottom_rack"
+rack_start_position = env._mj_data.joint(rack_joint_name).qpos[0]
+rack_end_position = 0.274
+num_steps = 30  # Number of steps for smooth sliding
+for i in range(1, num_steps + 1):
+    # Linear interpolation between start and end
+    rack_position = rack_start_position + (rack_end_position - rack_start_position) * (i / num_steps)
+    env._mj_data.joint(rack_joint_name).qpos[0] = rack_position
+    current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+    env.step(current_joint_positions)
+    time.sleep(0.01)  # Adjust for speed (optional)
+executor.wait(100)  # Wait for the environment to stabilize
+# time.sleep(20)  # Wait for the door to open
+env.place_object_in_dishwasher('knife/dish13_fj/', [0.77, -0.15, 0.37])
 print(f"the first knife is stable: {evaluator.is_stable('knife/')}")
 
 
