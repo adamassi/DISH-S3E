@@ -55,17 +55,19 @@ class DishwasherSemanticEvaluator:
             # Plates are considered stable if they are upright
             geom_names = self.env.get_valid_geometry_names()
             geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
+            # print(f"Checking stability for plate: {geom_name}")
+            # print(geom_names)
             gemo2_name = "Dishwasher/top_rack_base"
             normal_force = self.env.get_normal_force(geom_name, gemo2_name)
             if normal_force[2] not in [0, 0.0]: #its mean that the skom is in the down rack
                 return self.env.is_stable_orientation(dish_name, 90,10)
             return self.env.is_stable_orientation(dish_name, 0)
        
-        
-        
+
         # return self.env.is_stable_orientation(dish_name, 0)  # Default orientation check for other dishes
         # lazem arg3ha 
         return True
+    
     def has_space_top_rack(self) -> bool:
         """
         Checks if there's still available space in the top rack of the dishwasher.
@@ -138,52 +140,76 @@ class DishwasherSemanticEvaluator:
         z_max = 0.285
         """
         return  self.has_space_top_rack() and self.has_space_down_rack()
-        
-        # # Count the number of dishes in the upper rack (y > 0.5)
-        # occupied = len([d for d in self.env._object_manager.object_names
-        #                 if self.env._object_manager.get_object_pos(d)[1] > 0.5])
-        
-        # # Check if the number of dishes is less than the maximum capacity
-        # return occupied < self.env.num_dishs
+      
 
     def is_fragile(self, dish_name: str) -> bool:
         """
         Assumes fragility based on the name of the object.
         """
-        return 'glass' in dish_name or 'fragile' in dish_name.lower()
+        return 'glass' in dish_name or 'fragile' in dish_name.lower() or 'plate' in dish_name.lower() or 'tall_cup' in dish_name.lower()
 
     def is_correct_slot(self, dish_name: str, expected_slot="") -> bool:
         """
         Determines whether the dish is placed in the correct rack according to type.
         """
+    
         
         geom_names = self.env.get_valid_geometry_names()
         if expected_slot == 'cup':
             geom2_name= "Dishwasher//unnamed_geom_7"  
-            for geom_name in geom_names :
-                if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
-                    normal_force = self.env.get_normal_force(geom_name, geom2_name)
-                    print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-                    print(normal_force)
-                    if normal_force[2] not in [0, 0.0]:
-                        return True
+            # for geom_name in geom_names :
+            geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
+
+            # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
+            normal_force = self.env.get_normal_force(geom_name, geom2_name)
+            print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+            print(normal_force)
+            if normal_force[2] not in [0, 0.0]:
+                return True
+            return False
                     
         elif expected_slot == 'plate':
+            geom2_name = "Dishwasher/top_rack_base"
+            geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
+
+            # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
+            normal_force = self.env.get_normal_force(geom_name, geom2_name)
+            print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+            print(normal_force)
+            if normal_force[2] not in [0, 0.0]:
+                return True
+            return False
+        elif expected_slot == 'skom':
             geom2_name = "Dishwasher//unnamed_geom_8"
-            for geom_name in self.env.get_valid_geometry_names():
-                if 'plate' in geom_name.lower():
-                    normal_force = self.env.get_normal_force(geom_name, geom2_name)
-                    print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-                    print(normal_force)
-                    if normal_force[2] not in [0, 0.0]:
-                        return True
-            
-        else:
-        
-              return False
+            geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
 
-
+            # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
+            normal_force = self.env.get_normal_force(geom_name, geom2_name)
+            print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+            print(normal_force)
+            if normal_force[2] not in [0, 0.0]:
+                return True
+            return False
         return False
+    def has_space_top_rack(self) -> bool:
+        """
+        Checks if there's still available space in the top rack of the dishwasher.
+        This is based on how many dishes are already placed in the top rack.
+
+        Returns:
+            True if there is space, False otherwise.
+        """
+        gemo2_name = "Dishwasher/top_rack_base"
+        geom_names = self.env.get_valid_geometry_names()
+        num_dishes = 0
+        for geom_name in geom_names:
+            if 'plate' in geom_name.lower():
+                normal_force = self.env.get_normal_force(geom_name, gemo2_name)
+                # print(f"Normal force on {geom_name} with respect to {gemo2_name}:")
+                # print(normal_force)
+                if normal_force[2] not in [0, 0.0]:
+                    num_dishes += 1
+        return num_dishes < self.num_dishs_top_rack
 
     def get_state(self) -> Tuple[np.ndarray, List[str]]:
         """
