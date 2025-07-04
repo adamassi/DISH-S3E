@@ -55,10 +55,10 @@ class DishwasherSemanticEvaluator:
             # Plates are considered stable if they are upright
             geom_names = self.env.get_valid_geometry_names()
             geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
-            gemo2_name = "Dishwasher//unnamed_geom_7"
+            gemo2_name = "Dishwasher/top_rack_base"
             normal_force = self.env.get_normal_force(geom_name, gemo2_name)
             if normal_force[2] not in [0, 0.0]: #its mean that the skom is in the down rack
-                return self.env.is_stable_orientation(dish_name, 90)
+                return self.env.is_stable_orientation(dish_name, 90,10)
             return self.env.is_stable_orientation(dish_name, 0)
        
         

@@ -71,6 +71,7 @@ for i in range(1,4):
     print(f"the {i+1} wood_spoon is stable: {evaluator.is_stable(f'wood_spoon_{i}/')}")
 
 print(f"first plate is stable: {evaluator.is_stable('plate/')}")
+print(f"second plate is stable: {evaluator.is_stable('plate_1/')}")
 print(f"the first knife is stable: {evaluator.is_stable('knife/')}")
 # Open the dishwasher door
 door_joint_name = "Dishwasher/door"  # Correct joint name

@@ -392,7 +392,7 @@ class SimEnv:
         Return a list of all valid geometry names in the MuJoCo model.
         """
         return [mj.mj_id2name(self._mj_model, mj.mjtObj.mjOBJ_GEOM, geom_id) for geom_id in range(self._mj_model.ngeom)]
-    def is_stable_orientation(self, object_name: str, tolerance: float = 0.1) -> bool:
+    def is_stable_orientation(self, object_name: str, degree: float = 0.1, tolerance: float = 1) -> bool:
         """
         Checks if an object's orientation is stable based on its alignment with the upright Z-axis.
 
@@ -414,8 +414,10 @@ class SimEnv:
         angle_rad = np.arccos(np.clip(cos_theta, -1.0, 1.0))
         angle_deg = np.degrees(angle_rad)
         print(f"Angle between local Z and world Z for {object_name}: {angle_deg} degrees")
+        # print(f"Expected degree: {degree}, Tolerance: {tolerance}")
 
-        return abs(angle_deg - tolerance)< 1
+        # print(abs(angle_deg - degree) )
+        return abs(angle_deg - degree) < tolerance
     def place_object_in_dishwasher(self, object_name, new_position):
         """
         Update the position and rotation of an object in the dishwasher to make it upright.
