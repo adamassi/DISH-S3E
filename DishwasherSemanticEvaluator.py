@@ -60,7 +60,7 @@ class DishwasherSemanticEvaluator:
         Returns:
             True if there is space, False otherwise.
         """
-        gemo2_name = "Dishwasher/top_rack_baseDishwasher/top_rack"
+        gemo2_name = "Dishwasher/top_rack_base"
         geom_names = self.env.get_valid_geometry_names()
         num_dishes = 0
         for geom_name in geom_names:

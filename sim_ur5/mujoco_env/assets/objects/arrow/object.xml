@@ -1,0 +1,17 @@
+<mujoco model="arrow">
+    <worldbody>
+        <body name="arrow" pos="0 0 0">
+            <!-- Shaft: smaller vertical blue cylinder -->
+            <geom name="shaft" type="cylinder" size="0.005 0.025" pos="0 0 0.025"
+                  rgba="1 0 0 1" contype="0" conaffinity="0"/>
+
+            <!-- Arrowhead: smaller red V shape pointing downward -->
+            <geom name="head_left" type="box" size="0.01 0.0025 0.0025"
+                  pos="-0.0075 0 0.005" euler="0 0.785 0"
+                  rgba="1 0 0 1" contype="0" conaffinity="0"/>
+            <geom name="head_right" type="box" size="0.01 0.0025 0.0025"
+                  pos="0.0075 0 0.005" euler="0 -0.785 0"
+                  rgba="1 0 0 1" contype="0" conaffinity="0"/>
+        </body>
+    </worldbody>
+</mujoco>

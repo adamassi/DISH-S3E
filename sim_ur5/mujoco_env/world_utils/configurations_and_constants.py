@@ -46,7 +46,7 @@ sceneHouseTableWorld = SceneSpec(
         ObjectSpec('spoon', base_pos=[-0.8, 0.4, -0.35], base_joints=(JointSpec('free',attrs={'name': 'dish31_fj'}),),),  # Spoon object
         ObjectSpec('spoon', base_pos=[1, 0.8, -0.35], base_joints=(JointSpec('free',attrs={'name': 'dish32_fj'}),),),  # Spoon object
         ObjectSpec('fork', base_pos=[0.8, 0.4, -0.35], base_joints=(JointSpec('free',attrs={'name': 'dish33_fj'}),),),  # Spoon object
-
+        ObjectSpec('arrow', base_pos=[-0.1, 0.5, 0.45], ),
 
         
 
