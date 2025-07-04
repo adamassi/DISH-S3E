@@ -211,31 +211,90 @@ class DishwasherSemanticEvaluator:
                     num_dishes += 1
         return num_dishes < self.num_dishs_top_rack
 
+    # def get_state(self) -> Tuple[np.ndarray, List[str]]:
+    #     """
+    #     Returns a binary vector and corresponding predicate list
+    #     describing the current semantic state of the dishwasher domain.
+    #     """
+    #     predicates = []
+    #     values = []
+    #     for dish in self.env._object_manager.object_names:
+    #         stable = self.is_stable(dish)
+    #         predicates.append(f"IsStable({dish})")
+    #         values.append(stable)
+
+    #         fragile = self.is_fragile(dish)
+    #         predicates.append(f"IsFragile({dish})")
+    #         values.append(fragile)
+
+    #         correct_slot = self.is_correct_slot(dish, 'plate')  # or infer type of dish
+    #         predicates.append(f"InCorrectSlot({dish})")
+    #         values.append(correct_slot)
+
+    #     space = self.has_space()
+    #     predicates.append("HasSpace")
+    #     values.append(space)
+
+    #     return np.array(values), predicates
+    
     def get_state(self) -> Tuple[np.ndarray, List[str]]:
         """
-        Returns a binary vector and corresponding predicate list
-        describing the current semantic state of the dishwasher domain.
+        Evaluates the semantic state of the dishwasher environment.
+
+        Returns:
+            A tuple:
+            - np.ndarray of booleans for each semantic question.
+            - List of strings with the corresponding grounded predicates.
         """
+        answers = []
         predicates = []
-        values = []
-        for dish in self.env._object_manager.object_names:
-            stable = self.is_stable(dish)
-            predicates.append(f"IsStable({dish})")
-            values.append(stable)
 
-            fragile = self.is_fragile(dish)
-            predicates.append(f"IsFragile({dish})")
-            values.append(fragile)
+        # Get all geometry/dish names from the environment
+        dish_names = self.env.get_valid_geometry_names()
 
-            correct_slot = self.is_correct_slot(dish, 'plate')  # or infer type of dish
-            predicates.append(f"InCorrectSlot({dish})")
-            values.append(correct_slot)
+        # === 1. Check individual dish-level semantics ===
+        for name in dish_names:
+            if any(keyword in name.lower() for keyword in ['plate', 'cup', 'glass', 'dish']):
+                # 1a. Stability
+                stable = self.is_stable(name)
+                answers.append(stable)
+                predicates.append(f"IsStable({name})")
 
-        space = self.has_space()
-        predicates.append("HasSpace")
-        values.append(space)
+                # 1b. Fragility
+                fragile = self.is_fragile(name)
+                answers.append(fragile)
+                predicates.append(f"IsFragile({name})")
 
-        return np.array(values), predicates
+                # 1c. Correct placement
+                expected_slot = ''
+                if 'plate' in name.lower():
+                    expected_slot = 'plate'
+                elif 'cup' in name.lower() or 'glass' in name.lower():
+                    expected_slot = 'cup'
+                if expected_slot:
+                    correct_slot = self.is_correct_slot(name, expected_slot)
+                    answers.append(correct_slot)
+                    predicates.append(f"CorrectSlot({name}, {expected_slot})")
+
+        # === 2. Check global dishwasher state ===
+
+        # 2a. Space in top rack
+        top_space = self.has_space_top_rack()
+        answers.append(top_space)
+        predicates.append("HasSpace(top_rack)")
+
+        # 2b. Space in bottom rack
+        bottom_space = self.has_space_down_rack()
+        answers.append(bottom_space)
+        predicates.append("HasSpace(bottom_rack)")
+
+        # 2c. Overall space
+        overall_space = self.has_space()
+        answers.append(overall_space)
+        predicates.append("HasSpace(dishwasher)")
+
+        # === Return final state ===
+        return np.array(answers, dtype=bool), predicates
 
     def success_score(self, state: np.ndarray, goal_predicates: List[str], all_predicates: List[str]) -> float:
         """
