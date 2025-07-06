@@ -63,7 +63,7 @@ class SimEnv:
 
     def set_dish_positions_on_table(self, dish_positions_xy):
         z = 0.03
-        self._object_manager.set_all_dish_positions([[x, y, z] for x, y in dish_positions_xy])
+        self._object_manager.set_all_dish_positions([[x, y, z] for x, y in dishPositions_xy])
 
     def reset(self, randomize=True, dish_positions=None):
         self.max_joint_velocities = INIT_MAX_VELOCITY
@@ -259,6 +259,41 @@ class SimEnv:
         # Step the simulation to apply the changes
         self.simulate_steps(10)
         # print(f"Simulation updated with new position for {object_name}.")
+
+    # to open the dishwasher door and slide out the rack
+    def open_dishwasher_door(self, rack_joint_name=""):
+        """
+        Open the dishwasher door and slide out the rack slowly.
+        """
+        door_joint_name="Dishwasher/door"
+        if rack_joint_name =="bottom":
+            rack_joint_name = "Dishwasher/bottom_rack"
+        elif rack_joint_name == "top":
+            rack_joint_name = "Dishwasher/top_rack" 
+        else: 
+            rack_joint_name= ""
+        # Open the dishwasher door
+        door_open_position = -1.5  # Fully open position (in radians)
+        # Set the joint position
+        self._mj_data.joint(door_joint_name).qpos[0] = door_open_position
+        # Pass the current joint positions to the step method
+        current_joint_positions = {robot: self.robots_joint_pos[robot] for robot in self.robots_joint_pos.keys()}
+        self.step(current_joint_positions)  # Step the simulation to apply the change
+        # Slide out the dishwasher rack slowly
+        if rack_joint_name != "":
+            rack_start_position = self._mj_data.joint(rack_joint_name).qpos[0]
+            rack_end_position = 0.274  # Final position for the rack
+            num_steps = 30  # Number of steps for smooth sliding
+            for i in range(1, num_steps + 1):
+                # Linear interpolation between start and end
+                rack_position = rack_start_position + (rack_end_position - rack_start_position) * (i / num_steps)
+                self._mj_data.joint(rack_joint_name).qpos[0] = rack_position
+                current_joint_positions = {robot: self.robots_joint_pos[robot] for robot in self.robots_joint_pos.keys()}
+                self.step(current_joint_positions)
+                time.sleep(0.01)
+        
+
+
 
     def get_contacts(self, geom1_name, geom2_name):
         """
@@ -458,7 +493,20 @@ class SimEnv:
         # Step the simulation to apply the changes
         self.simulate_steps(10)
         # time.sleep(7)
-
+    def valid_names_dishs(self):
+        """
+        Return a list of valid dish names in the MuJoCo model, keeping only names that start with specific prefixes
+        and removing everything after '//' while appending '/' to the cleaned name.
+        """
+        valid_dish_names = []  # Initialize an empty list to store cleaned names
+        model = self._mj_model
+        for geom_id in range(model.ngeom):
+            geom_name = mj.mj_id2name(model, mj.mjtObj.mjOBJ_GEOM, geom_id)
+            if geom_name.startswith("plate") or geom_name.startswith("tall") or geom_name.startswith("wood") or geom_name.startswith("wine_glass") or geom_name.startswith("knife") or geom_name.startswith("spoon") or geom_name.startswith("fork"):
+                # Keep only the part before '//'
+                cleaned_name = geom_name.split("//")[0] + "/"  # Add '/' to the cleaned name
+                valid_dish_names.append(cleaned_name)  # Add cleaned name to the list
+        return valid_dish_names
 def convert_mj_struct_to_namedtuple(mj_struct):
     """
     convert a mujoco struct to a dictionary

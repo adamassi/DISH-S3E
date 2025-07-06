@@ -155,10 +155,11 @@ class DishwasherSemanticEvaluator:
     
         
         geom_names = self.env.get_valid_geometry_names()
+        geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
+
         if expected_slot == 'cup':
             geom2_name= "Dishwasher//unnamed_geom_7"  
             # for geom_name in geom_names :
-            geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
 
             # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
             normal_force = self.env.get_normal_force(geom_name, geom2_name)
@@ -170,7 +171,6 @@ class DishwasherSemanticEvaluator:
                     
         elif expected_slot == 'plate':
             geom2_name = "Dishwasher/top_rack_base"
-            geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
 
             # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
             normal_force = self.env.get_normal_force(geom_name, geom2_name)
@@ -181,8 +181,6 @@ class DishwasherSemanticEvaluator:
             return False
         elif expected_slot == 'skom':
             geom2_name = "Dishwasher//unnamed_geom_8"
-            geom_name = next((name for name in geom_names if name.startswith(dish_name)), None)
-
             # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
             normal_force = self.env.get_normal_force(geom_name, geom2_name)
             print(f"Normal force on {geom_name} with respect to {geom2_name}:")
@@ -254,27 +252,29 @@ class DishwasherSemanticEvaluator:
 
         # === 1. Check individual dish-level semantics ===
         for name in dish_names:
-            if any(keyword in name.lower() for keyword in ['plate', 'cup', 'glass', 'dish']):
-                # 1a. Stability
-                stable = self.is_stable(name)
-                answers.append(stable)
-                predicates.append(f"IsStable({name})")
+        
+            # 1a. Stability
+            stable = self.is_stable(name)
+            answers.append(stable)
+            predicates.append(f"IsStable({name})")
 
-                # 1b. Fragility
-                fragile = self.is_fragile(name)
-                answers.append(fragile)
-                predicates.append(f"IsFragile({name})")
+            # 1b. Fragility
+            fragile = self.is_fragile(name)
+            answers.append(fragile)
+            predicates.append(f"IsFragile({name})")
 
-                # 1c. Correct placement
-                expected_slot = ''
-                if 'plate' in name.lower():
-                    expected_slot = 'plate'
-                elif 'cup' in name.lower() or 'glass' in name.lower():
-                    expected_slot = 'cup'
-                if expected_slot:
-                    correct_slot = self.is_correct_slot(name, expected_slot)
-                    answers.append(correct_slot)
-                    predicates.append(f"CorrectSlot({name}, {expected_slot})")
+            # 1c. Correct placement
+            expected_slot = ''
+            if 'plate' in name.lower():
+                expected_slot = 'plate'
+            elif 'cup' in name.lower() or 'glass' in name.lower():
+                expected_slot = 'cup'
+            else: 
+                expected_slot = 'skom'
+            if expected_slot:
+                correct_slot = self.is_correct_slot(name, expected_slot)
+                answers.append(correct_slot)
+                predicates.append(f"CorrectSlot({name}, {expected_slot})")
 
         # === 2. Check global dishwasher state ===
 

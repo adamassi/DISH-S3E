@@ -7,12 +7,6 @@ from DishwasherSemanticEvaluator import DishwasherSemanticEvaluator
 
 # Initialize the simulation environment
 env = SimEnv()
-
-"""
-workspace_x_lims = [-0.9, -0.54]
-workspace_y_lims = [-1.0, -0.55]
-"""
-
 # Initial positions of dishes and plate
 dishs_position = [   
     [0, -0.6, 0.03],  # Dish 0
