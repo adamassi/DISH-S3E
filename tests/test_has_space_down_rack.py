@@ -86,6 +86,7 @@ env.close_top_rack()
 
 # env.place_object_in_dishwasher('wooden_fork/dish11_fj/', [0.77, -0.18, 0.37]) 
 # knife d5lt  block in the right
+env.point_arrow_to_object('knife/dish13_fj/')
 env.place_object_in_dishwasher('knife/dish13_fj/', [0.77, -0.15, 0.37])
 executor.wait(30)
 # executor.wait(30)
