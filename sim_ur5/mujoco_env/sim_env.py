@@ -515,6 +515,60 @@ class SimEnv:
                 cleaned_name = geom_name.split("//")[0] + "/"  # Add '/' to the cleaned name
                 valid_dish_names.append(cleaned_name)  # Add cleaned name to the list
         return valid_dish_names
+    
+
+    # Utility: Get actuator ID by name
+    def _get_actuator_id(self, name):
+        full_name = f"Dishwasher/{name}"
+        return mj.mj_name2id(self._mj_model, mj.mjtObj.mjOBJ_ACTUATOR, full_name)
+
+    # Generic actuator move function
+    def _move_actuator(self, name, target_pos, duration=1.0, steps=100):
+        motor_id = self._get_actuator_id(name)
+        for i in range(steps):
+            interp = target_pos  # Constant target for now (can interpolate if needed)
+            self._mj_data.ctrl[motor_id] = interp
+            self.simulate_steps(1)
+            time.sleep(duration / steps)
+
+    # Public methods
+
+    def open_dishwasher_door(self):
+        self._move_actuator("door_motor", target_pos=-1.5, duration=1.5)
+
+    def close_dishwasher_door(self):
+        self._move_actuator("door_motor", target_pos=0.0, duration=1.5)
+
+    def open_bottom_rack(self):
+        self._move_actuator("bottom_rack_motor", target_pos=0.274, duration=1.0)
+
+    def close_bottom_rack(self):
+        self._move_actuator("bottom_rack_motor", target_pos=0.0, duration=1.0)
+
+    def open_top_rack(self):
+        self._move_actuator("top_rack_motor", target_pos=0.274, duration=1.0)
+
+    def close_top_rack(self):
+        self._move_actuator("top_rack_motor", target_pos=0.0, duration=1.0)
+    
+
+    def point_arrow_to_object(self, object_name, offset_z=0.1):
+        """
+        Move the arrow above the given object.
+        """
+        try:
+            obj_pos = self._mj_data.body(object_name).xpos.copy()
+        except Exception as e:
+            print(f"[Arrow Error] Could not find object body: {object_name} — {e}")
+            return
+
+        arrow_body = self._mj_data.body('arrow')
+        new_pos = obj_pos.copy()
+        new_pos[2] += offset_z  # Raise the arrow above the object
+        arrow_body.xpos[:] = new_pos
+
+        # optional: simulate a few frames to apply
+        self.simulate_steps(2)
 def convert_mj_struct_to_namedtuple(mj_struct):
     """
     convert a mujoco struct to a dictionary

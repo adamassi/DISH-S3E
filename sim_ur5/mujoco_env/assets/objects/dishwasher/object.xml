@@ -18,5 +18,15 @@
     <!-- <actuator>
         <position joint="door" kp="50" kv="5"/>
     </actuator> -->
+    <actuator>
+        <!-- Door actuator -->
+        <position name="door_motor" joint="door" kp="10" />
+
+        <!-- Bottom rack actuator -->
+        <position name="bottom_rack_motor" joint="bottom_rack" kp="20" />
+
+        <!-- Top rack actuator -->
+        <position name="top_rack_motor" joint="top_rack" kp="20" />
+    </actuator>
 
 </mujoco>

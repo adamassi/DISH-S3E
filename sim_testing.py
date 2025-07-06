@@ -35,6 +35,37 @@ env.reset(randomize=False, dish_positions=dishs_position)
 #executor.pick_up("ur5e_2", -0.6, -0.5, 0.03)
 
 
+env.open_dishwasher_door()
+executor.wait(1000)
+env.open_bottom_rack()
+executor.wait(1000)
+env.open_top_rack()
+
+executor.wait(5000)
+print("finished openinggggggg")
+env.close_top_rack()
+executor.wait(1000)
+env.close_bottom_rack()
+executor.wait(1000)
+env.close_dishwasher_door()
+executor.wait(9000)
+
+print("finished movinggggggg")
+
+motor_id = env._mj_model.actuator('Dishwasher/bottom_rack_motor').id
+env._mj_data.ctrl[motor_id] = 0.25  # Target slide position
+
+executor.wait(1000)
+
+# door_id = env.model.actuator('door_motor').id
+# env._mj_data.ctrl[door_id] = -1.5  # Target angle (in radians)
+
+# executor.wait(1000)
+
+
+
+
+
 # Open the dishwasher door
 door_joint_name = "Dishwasher/door"  # Correct joint name
 door_open_position = -1.5  # Fully open position (in radians)
