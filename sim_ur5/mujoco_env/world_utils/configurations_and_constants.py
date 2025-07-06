@@ -6,7 +6,7 @@ from sim_ur5.mujoco_env.episode import *
 
 
 # Scene configuration for HouseTableWorld
-sceneHouseTableWorld = SceneSpec(
+sceneHouseTableWorld_forhas_space_down = SceneSpec(
     'housetableworld',
     objects=(
         # Define objects in the HouseTableWorld scene
@@ -55,8 +55,20 @@ sceneHouseTableWorld = SceneSpec(
     render_camera='top-right',  # Camera used for rendering
     init_keyframe='home'  # Initial keyframe for the scene
 )
+sceneHouseTableWorld = SceneSpec(
+    'housetableworld',
+    objects=(
+        ObjectSpec('plate', base_pos=[0, 0.6, 0.01], base_joints=(JointSpec('free',attrs={'name': 'dish5_fj'}),),),
+        ObjectSpec('plate', base_pos=[0.6, -0.48, 0.57], base_joints=(JointSpec('free',attrs={'name': 'dish6_fj'}),), base_rot=[1.57079632679, 0, 0]),
+        ObjectSpec('dish_can', base_pos=[0.0, 0.6, 0.4], base_joints=(JointSpec('free',attrs={'name': 'dish4_fj'}),),), 
+        ObjectSpec('knife', base_pos=[0.7, 0.6, 0.15], base_joints=(JointSpec('free',attrs={'name': 'dish13_fj'}),),),  # Knife object
+        ObjectSpec('tall_cup', base_pos=[0.2, 0.5, 0.05], base_joints=(JointSpec('free',attrs={'name': 'dish19_fj'}),),base_rot=[-1.57079632679, 0, 0]),  # Cup object
+        ObjectSpec('Dishwasher', base_pos=[0.6, -1, 0.]),  # Dishwasher object
 
-
+    ),
+    render_camera='top-right',  # Camera used for rendering
+    init_keyframe='home'  # Initial keyframe for the scene]
+)
 # Configuration for the MuJoCo environment with one UR5e robot
 muj_env_config = dict(
     scene=sceneHouseTableWorld,  # Use the HouseTableWorld scene

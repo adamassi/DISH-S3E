@@ -232,7 +232,13 @@ class SimEnv:
 
         return intrinsic_matrix
 
-    def is_object_grasped(self):
+    def is_object_grasped(self) -> bool:
+        """
+        Checks if the robot arm is currently holding an object.
+
+        Returns:
+            True if the robot arm is holding an object, False otherwise.
+        """
         return self._grasp_manager.attached_object_name is not None
 
     def get_agent_joint(self, agent_name):
@@ -354,7 +360,7 @@ class SimEnv:
             # Access geom1 and geom2 using indices or field names
             geom1_id = contact[0]  # Assuming geom1 is the first field
             geom2_id = contact[1]  # Assuming geom2 is the second field
-            print(f"Contact between geom1: {geom1_id} and geom2: {geom2_id}")
+            # print(f"Contact between geom1: {geom1_id} and geom2: {geom2_id}")
             # Use .any() to handle array comparisons
             if np.any(geom1_id == geom_id) or np.any(geom2_id == geom_id):
                 contact_forces.append(contact[2])  # Assuming force is the third field
@@ -403,6 +409,7 @@ class SimEnv:
 
         # Average all contact normals for one definite normal force
         return all_contact_normals.mean(axis=1)
+    # for printing all valid geometry names in the MuJoCo model
     def valid_geometry_names(self):
         """
         Print all valid geometry names in the MuJoCo model.
@@ -448,7 +455,8 @@ class SimEnv:
         cos_theta = np.dot(local_z, np.array([0, 0, 1]))
         angle_rad = np.arccos(np.clip(cos_theta, -1.0, 1.0))
         angle_deg = np.degrees(angle_rad)
-        print(f"Angle between local Z and world Z for {object_name}: {angle_deg} degrees")
+        #for debugging
+        # print(f"Angle between local Z and world Z for {object_name}: {angle_deg} degrees")
         # print(f"Expected degree: {degree}, Tolerance: {tolerance}")
 
         # print(abs(angle_deg - degree) )

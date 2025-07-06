@@ -95,21 +95,23 @@ class DishwasherSemanticEvaluator:
         for geom_name in geom_names :
             if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
                 normal_force = self.env.get_normal_force(geom_name, geom2_name)
-                print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-                print(normal_force)
+                # for debugging
+                # print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+                # print(normal_force)
                 if normal_force[2] not in [0, 0.0]:
                     num_cups += 1
-        print(f"Number of cups/glasses in the dishwasher: {num_cups}")
+        # print(f"Number of cups/glasses in the dishwasher: {num_cups}")
         geom2_name='Dishwasher//unnamed_geom_8'
         num_skoms = 0
         for geom_name in geom_names :
             if 'spoon' in geom_name.lower() or 'fork' in geom_name.lower() or 'knife' in geom_name.lower():
                 normal_force = self.env.get_normal_force(geom_name, geom2_name)
-                print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-                print(normal_force)
+                # for debugging
+                # print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+                # print(normal_force)
                 if normal_force[2] not in [0, 0.0]:
                     num_skoms += 1
-        print(f"Number of spoons/forks/knives in the dishwasher: {num_skoms}")
+        # print(f"Number of spoons/forks/knives in the dishwasher: {num_skoms}")
         return (num_cups < self.num_cups_down_rack) and (num_skoms < self.num_skom_down_rack)
     def has_space(self) -> bool:
         """
@@ -163,8 +165,9 @@ class DishwasherSemanticEvaluator:
 
             # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
             normal_force = self.env.get_normal_force(geom_name, geom2_name)
-            print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-            print(normal_force)
+            # for debugging
+            # print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+            # print(normal_force)
             if normal_force[2] not in [0, 0.0]:
                 return True
             return False
@@ -174,8 +177,8 @@ class DishwasherSemanticEvaluator:
 
             # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
             normal_force = self.env.get_normal_force(geom_name, geom2_name)
-            print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-            print(normal_force)
+            # print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+            # print(normal_force)
             if normal_force[2] not in [0, 0.0]:
                 return True
             return False
@@ -183,8 +186,8 @@ class DishwasherSemanticEvaluator:
             geom2_name = "Dishwasher//unnamed_geom_8"
             # if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
             normal_force = self.env.get_normal_force(geom_name, geom2_name)
-            print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-            print(normal_force)
+            # print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+            # print(normal_force)
             if normal_force[2] not in [0, 0.0]:
                 return True
             return False
@@ -208,32 +211,15 @@ class DishwasherSemanticEvaluator:
                 if normal_force[2] not in [0, 0.0]:
                     num_dishes += 1
         return num_dishes < self.num_dishs_top_rack
+    def is_object_grasped(self) -> bool:
+        """
+        Checks if the robot arm is currently holding an object.
 
-    # def get_state(self) -> Tuple[np.ndarray, List[str]]:
-    #     """
-    #     Returns a binary vector and corresponding predicate list
-    #     describing the current semantic state of the dishwasher domain.
-    #     """
-    #     predicates = []
-    #     values = []
-    #     for dish in self.env._object_manager.object_names:
-    #         stable = self.is_stable(dish)
-    #         predicates.append(f"IsStable({dish})")
-    #         values.append(stable)
-
-    #         fragile = self.is_fragile(dish)
-    #         predicates.append(f"IsFragile({dish})")
-    #         values.append(fragile)
-
-    #         correct_slot = self.is_correct_slot(dish, 'plate')  # or infer type of dish
-    #         predicates.append(f"InCorrectSlot({dish})")
-    #         values.append(correct_slot)
-
-    #     space = self.has_space()
-    #     predicates.append("HasSpace")
-    #     values.append(space)
-
-    #     return np.array(values), predicates
+        Returns:
+            True if the robot arm is holding an object, False otherwise.
+        """
+        return self.env.is_object_grasped()
+  
     
     def get_state(self) -> Tuple[np.ndarray, List[str]]:
         """
@@ -247,21 +233,25 @@ class DishwasherSemanticEvaluator:
         answers = []
         predicates = []
 
+        # check if robut arm hold object
+        object_grasped = self.is_object_grasped()
+        answers.append(object_grasped)
+        predicates.append("IsObjectGrasped")
         # Get all geometry/dish names from the environment
-        dish_names = self.env.get_valid_geometry_names()
+        dish_names = self.env.valid_names_dishs()
 
         # === 1. Check individual dish-level semantics ===
         for name in dish_names:
-        
+            real_name = name.rstrip('/')
             # 1a. Stability
             stable = self.is_stable(name)
             answers.append(stable)
-            predicates.append(f"IsStable({name})")
+            predicates.append(f"IsStable({real_name})")
 
             # 1b. Fragility
             fragile = self.is_fragile(name)
             answers.append(fragile)
-            predicates.append(f"IsFragile({name})")
+            predicates.append(f"IsFragile({real_name})")
 
             # 1c. Correct placement
             expected_slot = ''
@@ -274,7 +264,7 @@ class DishwasherSemanticEvaluator:
             if expected_slot:
                 correct_slot = self.is_correct_slot(name, expected_slot)
                 answers.append(correct_slot)
-                predicates.append(f"CorrectSlot({name}, {expected_slot})")
+                predicates.append(f"CorrectSlot({real_name}, {expected_slot})")
 
         # === 2. Check global dishwasher state ===
 
