@@ -22,29 +22,36 @@ executor = MotionExecutor(env)
 print("waiting for 1 second")
 env.reset(randomize=False, dish_positions=dishs_position)
 
-# Open the dishwasher door
-door_joint_name = "Dishwasher/door"  # Correct joint name
-door_open_position = -1.5  # Fully open position (in radians)
+# # Open the dishwasher door
+# door_joint_name = "Dishwasher/door"  # Correct joint name
+# door_open_position = -1.5  # Fully open position (in radians)
 
-# Set the joint position
-env._mj_data.joint(door_joint_name).qpos[0] = door_open_position
+# # Set the joint position
+# env._mj_data.joint(door_joint_name).qpos[0] = door_open_position
 
-# Pass the current joint positions to the step method
-current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
-env.step(current_joint_positions)  # Step the simulation to apply the change
+# # Pass the current joint positions to the step method
+# current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+# env.step(current_joint_positions)  # Step the simulation to apply the change
 
-# Slide out the dishwasher rack slowly
-rack_joint_name = "Dishwasher/bottom_rack"
-rack_start_position = env._mj_data.joint(rack_joint_name).qpos[0]
-rack_end_position = 0.274
-num_steps = 30  # Number of steps for smooth sliding
-for i in range(1, num_steps + 1):
-    # Linear interpolation between start and end
-    rack_position = rack_start_position + (rack_end_position - rack_start_position) * (i / num_steps)
-    env._mj_data.joint(rack_joint_name).qpos[0] = rack_position
-    current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
-    env.step(current_joint_positions)
-    time.sleep(0.01)  # Adjust for speed (optional)
+# # Slide out the dishwasher rack slowly
+# rack_joint_name = "Dishwasher/bottom_rack"
+# rack_start_position = env._mj_data.joint(rack_joint_name).qpos[0]
+# rack_end_position = 0.274
+# num_steps = 30  # Number of steps for smooth sliding
+# for i in range(1, num_steps + 1):
+#     # Linear interpolation between start and end
+#     rack_position = rack_start_position + (rack_end_position - rack_start_position) * (i / num_steps)
+#     env._mj_data.joint(rack_joint_name).qpos[0] = rack_position
+#     current_joint_positions = {robot: env.robots_joint_pos[robot] for robot in env.robots_joint_pos.keys()}
+#     env.step(current_joint_positions)
+#     time.sleep(0.01)  # Adjust for speed (optional)
+
+
+env.open_dishwasher_door()
+executor.wait(200)
+env.open_bottom_rack()
+executor.wait(1000)
+print("Dishwasher door opened and bottom rack slid outtttttttttttttttttttttttttttttt\n \n \n \n \n tttttt \n.")
 
 # Test logic for checking space in the down rack
 evaluator = DishwasherSemanticEvaluator(env)
@@ -71,6 +78,11 @@ print(env.get_normal_force(geom1_name, geom2_name))
 # env.place_object_in_dishwasher('wooden_fork/dish11_fj/', [0.77, -0.18, 0.37]) 
 executor.wait(100)
 # time.sleep(1000)
+
+env.open_top_rack()
+executor.wait(70)
+env.close_top_rack()
+
 
 # env.place_object_in_dishwasher('wooden_fork/dish11_fj/', [0.77, -0.18, 0.37]) 
 # knife d5lt  block in the right
