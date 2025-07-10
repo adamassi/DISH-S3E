@@ -13,6 +13,7 @@ import logging
 from scipy.spatial.transform import Rotation as R
 import time
 
+from sim_ur5.mujoco_env.rendering import WindowRenderer
 
 class SimEnv:
     def __init__(self, render_mode='human', cfg=muj_env_config, render_sleep_to_maintain_fps=True):
@@ -261,11 +262,45 @@ class SimEnv:
         # print(f"Current position of {object_name}: {self._mj_data.qpos[pos_adrr:pos_adrr + 3]}")
         self._mj_data.qpos[pos_adrr:pos_adrr + 3] = new_position
         # print(f"Updated position of {object_name}: {new_position}")
+        
+        # self.simulate_steps(1)
+        # time.sleep(2)
+
 
         # Step the simulation to apply the changes
         self.simulate_steps(10)
         # print(f"Simulation updated with new position for {object_name}.")
 
+    def update_object_position_and_rotation(self, object_name, new_position, new_rotation_euler=None):
+        """
+        Update the position and optionally the rotation of a specific object.
+
+        Args:
+            object_name: The name of the object's joint to update (e.g., "plate/").
+            new_position: A list [x, y, z] specifying the new position.
+            new_rotation_euler: An optional list [roll, pitch, yaw] in radians for the new orientation.
+                                If None, the rotation is not changed.
+        """
+        
+        # Get the object's joint ID and qpos address
+        joint_id = self._mj_model.joint(object_name).id
+        pos_adrr = self._mj_model.jnt_qposadr[joint_id]
+
+        # Update position
+        self._mj_data.qpos[pos_adrr:pos_adrr + 3] = new_position
+
+        # Update rotation if provided
+        if new_rotation_euler is not None:
+            # Convert Euler angles to quaternion
+            new_rotation_quat = R.from_euler('xyz', new_rotation_euler).as_quat()
+            rot_adrr = pos_adrr + 3  # Rotation values (quaternion) start after position (x,y,z)
+            self._mj_data.qpos[rot_adrr:rot_adrr + 4] = new_rotation_quat
+        
+        # self.simulate_steps(1)
+        # time.sleep(3)
+        # Step the simulation to apply the changes
+        self.simulate_steps(10)
+        
     # to open the dishwasher door and slide out the rack
     def open_dishwasher_door(self, rack_joint_name=""):
         """
@@ -552,23 +587,119 @@ class SimEnv:
         self._move_actuator("top_rack_motor", target_pos=0.0, duration=1.0)
     
 
-    def point_arrow_to_object(self, object_name, offset_z=0.1):
+    # def point_arrow_to_object(self, object_name, offset_z=0.1):
+    #     """
+    #     Move the arrow above the given object.
+    #     """
+    #     try:
+    #         obj_pos = self._mj_data.body(object_name).xpos.copy()
+    #     except Exception as e:
+    #         print(f"[Arrow Error] Could not find object body: {object_name} — {e}")
+    #         return
+
+    #     arrow_body = self._mj_data.body('arrow')
+    #     new_pos = obj_pos.copy()
+    #     new_pos[2] += offset_z  # Raise the arrow above the object
+    #     arrow_body.xpos[:] = new_pos
+
+    #     # optional: simulate a few frames to apply
+    #     self.simulate_steps(2)
+
+    # def select_body(self, body_name: str):
+    #     """
+    #     Highlights a body in the MuJoCo viewer when label mode is 'selected'.
+    #     """
+    #     if not isinstance(self.renderer, WindowRenderer):
+    #         raise RuntimeError("Body selection only works with WindowRenderer (render_mode='human')")
+
+    #     if not hasattr(self.renderer, "viewer"):
+    #         raise RuntimeError("WindowRenderer does not have an active viewer.")
+
+    #     viewer = self.renderer.viewer
+
+    #     with viewer.lock():
+    #         viewer.sel.active = True
+    #         viewer.sel.type = mj.mjtObj.mjOBJ_BODY
+    #         viewer.sel.id = mj.mj_name2id(self._mj_model, mj.mjtObj.mjOBJ_BODY, body_name)
+    
+    # def select_body(self, body_name: str):
+    #     """
+    #     Select a body in the MuJoCo viewer so its label appears when label=SELECTED.
+    #     """
+    #     if not hasattr(self._env.renderer, "viewer"):
+    #         raise RuntimeError("Viewer is not active or not a windowed viewer")
+
+    #     viewer = self._env.renderer.viewer
+    #     with viewer.lock():
+    #         viewer.sel.active = True
+    #         viewer.sel.type = mj.mjtObj.mjOBJ_BODY
+    #         viewer.sel.id = mj.mj_name2id(self._mj_model, mj.mjtObj.mjOBJ_BODY, body_name)
+    
+    # def print_all_bodies(self):
+    #     """
+    #     Print all bodies in the MuJoCo model.
+    #     """
+    #     print([mj.mj_id2name(self._mj_model, mj.mjtObj.mjOBJ_BODY, i) for i in range(self._mj_model.nbody)])
+    def close_top_rack(self):
+        self._move_actuator("top_rack_motor", target_pos=0.0, duration=1.0)
+    
+    def select_body(self, body_name: str):
         """
-        Move the arrow above the given object.
+        Select a body in the MuJoCo viewer. Its label will appear if labels for
+        selected objects are enabled in the viewer (usually by pressing 'L').
+        To deselect, pass None as the body_name.
         """
-        try:
-            obj_pos = self._mj_data.body(object_name).xpos.copy()
-        except Exception as e:
-            print(f"[Arrow Error] Could not find object body: {object_name} — {e}")
+        if self.render_mode != 'human' or not hasattr(self._env.renderer, "viewer"):
+            print("Warning: Body selection is only available in 'human' render mode.")
             return
 
-        arrow_body = self._mj_data.body('arrow')
-        new_pos = obj_pos.copy()
-        new_pos[2] += offset_z  # Raise the arrow above the object
-        arrow_body.xpos[:] = new_pos
+        viewer = self._env.renderer.viewer
+        with viewer.lock():
+            if body_name:
+                body_id = mj.mj_name2id(self._mj_model, mj.mjtObj.mjOBJ_BODY, body_name)
+                if body_id != -1:
+                    # Set the selected body ID. The viewer will highlight it.
+                    viewer._pert.select = body_id
+                    # 'active' is for enabling mouse perturbations. Set to 0 to only select.
+                    viewer._pert.active = 0
+                else:
+                    print(f"Warning: Body '{body_name}' not found. Deselecting.")
+                    viewer._pert.select = -1  # Deselect if name not found
+                    viewer._pert.active = 0
+            else:
+                # Deselect if body_name is None
+                viewer._pert.select = -1
+                viewer._pert.active = 0
 
-        # optional: simulate a few frames to apply
-        self.simulate_steps(2)
+    def print_all_bodies(self):
+        """
+        Print all bodies in the MuJoCo model.
+        """
+        print([mj.mj_id2name(self._mj_model, mj.mjtObj.mjOBJ_BODY, i) for i in range(self._mj_model.nbody)])
+    def rotate_object(self, object_name: str, new_rotation_euler: list):
+        """
+        Rotate a specific object to a new orientation using Euler angles.
+
+        Args:
+            object_name: The name of the object's joint to rotate (e.g., "plate/").
+            new_rotation_euler: A list [roll, pitch, yaw] in radians for the new orientation.
+        """
+        
+        # Convert Euler angles to quaternion
+        new_rotation_quat = R.from_euler('xyz', new_rotation_euler).as_quat()
+
+        # Get the object's joint ID and qpos address
+        joint_id = self._mj_model.joint(object_name).id
+        pos_adrr = self._mj_model.jnt_qposadr[joint_id]
+        rot_adrr = pos_adrr + 3  # Rotation values (quaternion) start after position (x,y,z)
+
+        # Update the object's rotation in qpos
+        self._mj_data.qpos[rot_adrr:rot_adrr + 4] = new_rotation_quat
+
+        # Step the simulation to apply the changes
+        self.simulate_steps(10)
+    
+
 def convert_mj_struct_to_namedtuple(mj_struct):
     """
     convert a mujoco struct to a dictionary
