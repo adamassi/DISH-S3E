@@ -10,6 +10,18 @@
 # - State extraction of semantic facts
 # - Success scoring based on desired predicates
 
+
+"""
+semantic questions in this file:
+- is_stable(dish_name: str) -> bool   | Checks if a dish is placed stably on a surface by checking its orientation.
+- has_space_top_rack() -> bool        | Checks if there's still available space in the top rack of the dishwasher.
+- has_space_down_rack() -> bool       | Checks if there's still available space in the down rack of the dishwasher.
+- has_space() -> bool                 | Checks if there's still available space in the dishwasher.
+- is_fragile(dish_name: str) -> bool  | Assumes fragility based on the name of the object.
+- is_correct_slot(dish_name: str, expected_slot: str) -> bool | Determines whether the dish is placed in the correct rack according to type.
+
+"""
+
 from typing import List, Tuple
 import numpy as np
 
@@ -87,7 +99,37 @@ class DishwasherSemanticEvaluator:
                 if normal_force[2] not in [0, 0.0]:
                     num_dishes += 1
         return num_dishes < self.num_dishs_top_rack
-        
+    
+    def has_space_cup_rack(self) -> bool:
+        geom2_name = "Dishwasher//unnamed_geom_7"
+        geom_names = self.env.get_valid_geometry_names()
+        num_cups = 0
+        for geom_name in geom_names:
+            if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
+                normal_force = self.env.get_normal_force(geom_name, geom2_name)
+                print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+                print(normal_force)
+                if normal_force[2] not in [0, 0.0]:
+                    num_cups += 1
+        print(f"Number of cups/glasses in the dishwasher: {num_cups}")
+        return num_cups < self.num_cups_down_rack
+
+
+    def has_space_utensil_rack(self) -> bool:
+        geom2_name = "Dishwasher//unnamed_geom_8"
+        geom_names = self.env.get_valid_geometry_names()
+        num_utensils = 0
+        for geom_name in geom_names:
+            if 'spoon' in geom_name.lower() or 'fork' in geom_name.lower() or 'knife' in geom_name.lower():
+                normal_force = self.env.get_normal_force(geom_name, geom2_name)
+                print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+                print(normal_force)
+                if normal_force[2] not in [0, 0.0]:
+                    num_utensils += 1
+        print(f"Number of spoons/forks/knives in the dishwasher: {num_utensils}")
+        return num_utensils < self.num_skom_down_rack
+
+
     def has_space_down_rack(self) -> bool:
         geom2_name= "Dishwasher//unnamed_geom_7"  
         geom_names = self.env.get_valid_geometry_names()
