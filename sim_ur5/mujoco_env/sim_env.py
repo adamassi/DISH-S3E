@@ -63,7 +63,7 @@ class SimEnv:
 
     def set_dish_positions_on_table(self, dish_positions_xy):
         z = 0.03
-        self._object_manager.set_all_dish_positions([[x, y, z] for x, y in dishPositions_xy])
+        self._object_manager.set_all_dish_positions([[x, y, z] for x, y in dish_positions_xy])
 
     def reset(self, randomize=True, dish_positions=None):
         self.max_joint_velocities = INIT_MAX_VELOCITY
@@ -334,6 +334,7 @@ class SimEnv:
         return contact_idx, contact_dir
     def get_force_on_geom(self, geom_name):
         """
+        ***better not use or to delete**
         Get the average force applied on a specific geometry.
 
         Args:
