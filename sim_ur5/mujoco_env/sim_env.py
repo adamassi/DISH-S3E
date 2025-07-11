@@ -2,18 +2,15 @@
 from copy import deepcopy, copy
 from collections import namedtuple
 import mujoco as mj
-import scipy
 from mujoco import MjvCamera
 from sim_ur5.mujoco_env import MujocoEnv
 from sim_ur5.mujoco_env.world_utils.object_manager import ObjectManager
 from sim_ur5.mujoco_env.world_utils.grasp_manager import GraspManager
 from sim_ur5.mujoco_env.world_utils.configurations_and_constants import *
 from sim_ur5.utils.logging_util import setup_logging
-import logging
 from scipy.spatial.transform import Rotation as R
 import time
 
-from sim_ur5.mujoco_env.rendering import WindowRenderer
 
 class SimEnv:
     def __init__(self, render_mode='human', cfg=muj_env_config, render_sleep_to_maintain_fps=True):
@@ -526,7 +523,7 @@ class SimEnv:
         # Update the object's rotation
         rot_adrr = pos_adrr + 3  # Rotation values start after position
         self._mj_data.qpos[rot_adrr:rot_adrr + 4] = new_rotation_quat
-        self.simulate_steps(10)
+        self.simulate_steps(1)
 
         # time.sleep(3)
         
