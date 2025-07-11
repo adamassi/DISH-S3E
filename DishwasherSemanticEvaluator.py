@@ -107,8 +107,8 @@ class DishwasherSemanticEvaluator:
         for geom_name in geom_names:
             if 'cup' in geom_name.lower() or 'glass' in geom_name.lower():
                 normal_force = self.env.get_normal_force(geom_name, geom2_name)
-                print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-                print(normal_force)
+                # print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+                # print(normal_force)
                 if normal_force[2] not in [0, 0.0]:
                     num_cups += 1
         print(f"Number of cups/glasses in the dishwasher: {num_cups}")
@@ -122,8 +122,8 @@ class DishwasherSemanticEvaluator:
         for geom_name in geom_names:
             if 'spoon' in geom_name.lower() or 'fork' in geom_name.lower() or 'knife' in geom_name.lower():
                 normal_force = self.env.get_normal_force(geom_name, geom2_name)
-                print(f"Normal force on {geom_name} with respect to {geom2_name}:")
-                print(normal_force)
+                # print(f"Normal force on {geom_name} with respect to {geom2_name}:")
+                # print(normal_force)
                 if normal_force[2] not in [0, 0.0]:
                     num_utensils += 1
         print(f"Number of spoons/forks/knives in the dishwasher: {num_utensils}")
@@ -234,25 +234,25 @@ class DishwasherSemanticEvaluator:
                 return True
             return False
         return False
-    def has_space_top_rack(self) -> bool:
-        """
-        Checks if there's still available space in the top rack of the dishwasher.
-        This is based on how many dishes are already placed in the top rack.
+    # def has_space_top_rack(self) -> bool:
+    #     """
+    #     Checks if there's still available space in the top rack of the dishwasher.
+    #     This is based on how many dishes are already placed in the top rack.
 
-        Returns:
-            True if there is space, False otherwise.
-        """
-        gemo2_name = "Dishwasher/top_rack_base"
-        geom_names = self.env.get_valid_geometry_names()
-        num_dishes = 0
-        for geom_name in geom_names:
-            if 'plate' in geom_name.lower():
-                normal_force = self.env.get_normal_force(geom_name, gemo2_name)
-                # print(f"Normal force on {geom_name} with respect to {gemo2_name}:")
-                # print(normal_force)
-                if normal_force[2] not in [0, 0.0]:
-                    num_dishes += 1
-        return num_dishes < self.num_dishs_top_rack
+    #     Returns:
+    #         True if there is space, False otherwise.
+    #     """
+    #     gemo2_name = "Dishwasher/top_rack_base"
+    #     geom_names = self.env.get_valid_geometry_names()
+    #     num_dishes = 0
+    #     for geom_name in geom_names:
+    #         if 'plate' in geom_name.lower():
+    #             normal_force = self.env.get_normal_force(geom_name, gemo2_name)
+    #             # print(f"Normal force on {geom_name} with respect to {gemo2_name}:")
+    #             # print(normal_force)
+    #             if normal_force[2] not in [0, 0.0]:
+    #                 num_dishes += 1
+    #     return num_dishes < self.num_dishs_top_rack
     def is_object_grasped(self) -> bool:
         """
         Checks if the robot arm is currently holding an object.
@@ -263,28 +263,35 @@ class DishwasherSemanticEvaluator:
         return self.env.is_object_grasped()
   
     
+
+
     def get_state(self) -> Tuple[np.ndarray, List[str]]:
         """
-        Evaluates the semantic state of the dishwasher environment.
-
-        Returns:
-            A tuple:
-            - np.ndarray of booleans for each semantic question.
-            - List of strings with the corresponding grounded predicates.
+        Evaluates the semantic state of the dishwasher environment,
+        focusing only on relevant dish objects.
         """
         answers = []
         predicates = []
 
-        # check if robut arm hold object
+        # check if robot arm is holding an object
         object_grasped = self.is_object_grasped()
         answers.append(object_grasped)
         predicates.append("IsObjectGrasped")
-        # Get all geometry/dish names from the environment
+
+        # Get all relevant geometry/dish names from the environment
         dish_names = self.env.valid_names_dishs()
+        relevant_keywords = ['knife', 'spoon', 'fork', 'plate', 'cup', 'glass', 'wine_glass', 'tall_cup']
+
+        # Filter only relevant items
+        relevant_dishes = [
+            name for name in dish_names
+            if any(keyword in name.lower() for keyword in relevant_keywords)
+        ]
 
         # === 1. Check individual dish-level semantics ===
-        for name in dish_names:
+        for name in relevant_dishes:
             real_name = name.rstrip('/')
+
             # 1a. Stability
             stable = self.is_stable(name)
             answers.append(stable)
@@ -301,110 +308,308 @@ class DishwasherSemanticEvaluator:
                 expected_slot = 'plate'
             elif 'cup' in name.lower() or 'glass' in name.lower():
                 expected_slot = 'cup'
-            else: 
+            else:
                 expected_slot = 'skom'
-            if expected_slot:
-                correct_slot = self.is_correct_slot(name, expected_slot)
-                answers.append(correct_slot)
-                predicates.append(f"CorrectSlot({real_name}, {expected_slot})")
+
+            correct_slot = self.is_correct_slot(name, expected_slot)
+            answers.append(correct_slot)
+            predicates.append(f"CorrectSlot({real_name}, {expected_slot})")
 
         # === 2. Check global dishwasher state ===
-
-        # 2a. Space in top rack
         top_space = self.has_space_top_rack()
-        answers.append(top_space)
-        predicates.append("HasSpace(top_rack)")
+        cup_rack_space = self.has_space_cup_rack()
+        utensil_rack_space = self.has_space_utensil_rack()
+        # bottom_space = self.has_space_down_rack()
+        # overall_space = self.has_space()
 
-        # 2b. Space in bottom rack
-        bottom_space = self.has_space_down_rack()
-        answers.append(bottom_space)
-        predicates.append("HasSpace(bottom_rack)")
+        answers.extend([top_space, cup_rack_space, utensil_rack_space])
+        predicates.extend(["HasSpace(top_rack)", "HasSpace(cup_rack)", "HasSpace(utensil_rack)"])
+        # predicates.extend(["HasSpace(top_rack)", "HasSpace(bottom_rack)", "HasSpace(dishwasher)"])
 
-        # 2c. Overall space
-        overall_space = self.has_space()
-        answers.append(overall_space)
-        predicates.append("HasSpace(dishwasher)")
-
-        # === Return final state ===
         return np.array(answers, dtype=bool), predicates
-    
+
     def success_score(self, state: Tuple[np.ndarray, List[str]], goal: List[str]) -> float:
         """
-        Computes a score (0–100) that measures how close the current state is to satisfying the goal predicates.
-
-        Args:
-            state: Tuple of (answers_array, predicates_list) from get_state().
-            goal: List of grounded predicates (strings) that define the desired goal state.
-
-        Returns:
-            A float score between 0 and 100.
+        Computes a success score (0–100) based only on the provided `state` and `goal`.
+        Logic:
+        - If object in goal is missing in state → 0 (with warning)
+        - If object in correct slot but not stable → 70
+        - If object in correct slot and stable → 100
+        - Else → 0
         """
         answers, predicates = state
-
-        # Map from predicate to its boolean value
         state_dict = dict(zip(predicates, answers))
 
-        # Track per-object score and total weight
-        total_score = 0.0
-        object_scores = []
-        valid_objects = []
-
-        # Precompute slot availability
-        top_rack_has_space = self.has_space_top_rack()
-        bottom_rack_has_space = self.has_space_down_rack()
+        scores = []
 
         for pred in goal:
-            if pred.startswith("CorrectSlot("):
-                # Extract object name and expected slot
-                inside = pred[len("CorrectSlot("):-1]
-                obj_name, expected_slot = [s.strip() for s in inside.split(",")]
+            if not pred.startswith("CorrectSlot("):
+                continue  # Only process CorrectSlot goals
+            if goal[pred] is not True:
+                continue  # Skip 'False' goals
 
-                correct_slot_pred = f"CorrectSlot({obj_name}, {expected_slot})"
-                stable_pred = f"IsStable({obj_name})"
+            inside = pred[len("CorrectSlot("):-1]
+            obj_name, expected_slot = [s.strip() for s in inside.split(",")]
 
-                correct_slot = state_dict.get(correct_slot_pred, False)
+            correct_slot_key = f"CorrectSlot({obj_name}, {expected_slot})"
+            stable_key = f"IsStable({obj_name})"
 
-                # Determine if the correct slot is full
-                if not correct_slot:
-                    if expected_slot == 'plate' and not top_rack_has_space:
-                        continue  # skip object
-                    elif expected_slot == 'cup' and not bottom_rack_has_space:
-                        continue  # skip object
+            if correct_slot_key not in state_dict:
+                print(f"⚠️  {correct_slot_key} not found in state — assigning score 0")
+                scores.append(0)
+                continue
 
-                # Now count it as a valid object
-                valid_objects.append(obj_name)
+            if not state_dict[correct_slot_key]:  # Not in correct slot
+                scores.append(0)
+                continue
 
-                if correct_slot:
-                    is_stable = state_dict.get(stable_pred, False)
-                    obj_score = 100 if is_stable else 70  # you can change 70 to any value you want
-                else:
-                    obj_score = 0
+            # In correct slot, now check stability
+            stable = state_dict.get(stable_key, False)
+            score = 100 if stable else 70
+            scores.append(score)
 
-                object_scores.append(obj_score)
+        if not scores:
+            return 0.0
 
-        # Score per-object (weighted evenly)
-        if valid_objects:
-            total_object_score = sum(object_scores)
-            object_score = total_object_score / len(valid_objects)
-        else:
-            object_score = 0
+        return round(sum(scores) / len(scores), 2)
 
-        # Optional: Add global predicates
-        global_score = 0
-        global_weights = {
-            "HasSpace(top_rack)": 7,
-            "HasSpace(bottom_rack)": 7,
-            "HasSpace(dishwasher)": 6,
-        }
 
-        for pred, weight in global_weights.items():
-            if pred in goal and state_dict.get(pred, False):
-                global_score += weight
 
-        # Final score
-        final_score = object_score * 0.8 + global_score  # 80% object-based, 20% global
+    # def success_score(self, state: Tuple[np.ndarray, List[str]], goal: List[str]) -> float:
+    #     """
+    #     Computes a score (0–100) that measures how close the current state is to satisfying the goal predicates.
+    #     Only considers relevant dish objects.
+    #     """
+    #     answers, predicates = state
 
-        return round(final_score, 2)
+    #     # Map from predicate to its boolean value
+    #     state_dict = dict(zip(predicates, answers))
+
+    #     # Define relevant object types
+    #     relevant_keywords = ['knife', 'spoon', 'fork', 'plate', 'cup', 'glass', 'wine_glass', 'tall_cup']
+
+    #     # Track per-object score and total weight
+    #     total_score = 0.0
+    #     object_scores = []
+    #     valid_objects = []
+
+    #     # Precompute slot availability
+    #     top_rack_has_space = self.has_space_top_rack()
+    #     # bottom_rack_has_space = self.has_space_down_rack()
+    #     cup_rack_has_space = self.has_space_cup_rack()
+    #     utensil_rack_has_space = self.has_space_utensil_rack()
+        
+
+    #     for pred in goal:
+    #         # Filter only relevant object goals
+    #         if not any(keyword in pred.lower() for keyword in relevant_keywords) and not pred.startswith("HasSpace("):
+    #             continue
+
+    #         if pred.startswith("CorrectSlot("):
+    #             # Extract object name and expected slot
+    #             inside = pred[len("CorrectSlot("):-1]
+    #             obj_name, expected_slot = [s.strip() for s in inside.split(",")]
+
+    #             correct_slot_pred = f"CorrectSlot({obj_name}, {expected_slot})"
+    #             stable_pred = f"IsStable({obj_name})"
+
+    #             correct_slot = state_dict.get(correct_slot_pred, False)
+
+    #             # Determine if the correct slot is full
+    #             if not correct_slot:
+    #                 if expected_slot == 'plate' and not top_rack_has_space:
+    #                     continue
+    #                 elif expected_slot == 'cup' and not cup_rack_has_space:
+    #                     continue
+    #                 elif expected_slot == 'skom' and not utensil_rack_has_space:
+    #                     continue
+
+    #             # Count as a valid object
+    #             valid_objects.append(obj_name)
+
+    #             if correct_slot:
+    #                 is_stable = state_dict.get(stable_pred, False)
+    #                 obj_score = 100 if is_stable else 70
+    #             else:
+    #                 obj_score = 0
+
+    #             object_scores.append(obj_score)
+
+    #     # Score per-object (weighted evenly)
+    #     if valid_objects:
+    #         total_object_score = sum(object_scores)
+    #         object_score = total_object_score / len(valid_objects)
+    #     else:
+    #         object_score = 0
+
+    #     # Add global space predicate scores
+    #     global_score = 0
+    #     global_weights = {
+    #         "HasSpace(top_rack)": 7,
+    #         "HasSpace(bottom_rack)": 7,
+    #         "HasSpace(dishwasher)": 6,
+    #     }
+
+    #     for pred, weight in global_weights.items():
+    #         if pred in goal and state_dict.get(pred, False):
+    #             global_score += weight
+
+    #     # Final weighted score
+    #     final_score = object_score #* 0.8 + global_score  # 80% object-based, 20% global
+
+    #     return round(final_score, 2)
+
+
+
+
+
+    # def get_state(self) -> Tuple[np.ndarray, List[str]]:
+    #     """
+    #     Evaluates the semantic state of the dishwasher environment.
+
+    #     Returns:
+    #         A tuple:
+    #         - np.ndarray of booleans for each semantic question.
+    #         - List of strings with the corresponding grounded predicates.
+    #     """
+    #     answers = []
+    #     predicates = []
+
+    #     # check if robut arm hold object
+    #     object_grasped = self.is_object_grasped()
+    #     answers.append(object_grasped)
+    #     predicates.append("IsObjectGrasped")
+    #     # Get all geometry/dish names from the environment
+    #     dish_names = self.env.valid_names_dishs()
+
+    #     # === 1. Check individual dish-level semantics ===
+    #     for name in dish_names:
+    #         real_name = name.rstrip('/')
+    #         # 1a. Stability
+    #         stable = self.is_stable(name)
+    #         answers.append(stable)
+    #         predicates.append(f"IsStable({real_name})")
+
+    #         # 1b. Fragility
+    #         fragile = self.is_fragile(name)
+    #         answers.append(fragile)
+    #         predicates.append(f"IsFragile({real_name})")
+
+    #         # 1c. Correct placement
+    #         expected_slot = ''
+    #         if 'plate' in name.lower():
+    #             expected_slot = 'plate'
+    #         elif 'cup' in name.lower() or 'glass' in name.lower():
+    #             expected_slot = 'cup'
+    #         else: 
+    #             expected_slot = 'skom'
+    #         if expected_slot:
+    #             correct_slot = self.is_correct_slot(name, expected_slot)
+    #             answers.append(correct_slot)
+    #             predicates.append(f"CorrectSlot({real_name}, {expected_slot})")
+
+    #     # === 2. Check global dishwasher state ===
+
+    #     # 2a. Space in top rack
+    #     top_space = self.has_space_top_rack()
+    #     answers.append(top_space)
+    #     predicates.append("HasSpace(top_rack)")
+
+    #     # 2b. Space in bottom rack
+    #     bottom_space = self.has_space_down_rack()
+    #     answers.append(bottom_space)
+    #     predicates.append("HasSpace(bottom_rack)")
+
+    #     # 2c. Overall space
+    #     overall_space = self.has_space()
+    #     answers.append(overall_space)
+    #     predicates.append("HasSpace(dishwasher)")
+
+    #     # === Return final state ===
+    #     return np.array(answers, dtype=bool), predicates
+    
+    # def success_score(self, state: Tuple[np.ndarray, List[str]], goal: List[str]) -> float:
+    #     """
+    #     Computes a score (0–100) that measures how close the current state is to satisfying the goal predicates.
+
+    #     Args:
+    #         state: Tuple of (answers_array, predicates_list) from get_state().
+    #         goal: List of grounded predicates (strings) that define the desired goal state.
+
+    #     Returns:
+    #         A float score between 0 and 100.
+    #     """
+    #     answers, predicates = state
+
+    #     # Map from predicate to its boolean value
+    #     state_dict = dict(zip(predicates, answers))
+
+    #     # Track per-object score and total weight
+    #     total_score = 0.0
+    #     object_scores = []
+    #     valid_objects = []
+
+    #     # Precompute slot availability
+    #     top_rack_has_space = self.has_space_top_rack()
+    #     bottom_rack_has_space = self.has_space_down_rack()
+
+    #     for pred in goal:
+    #         if pred.startswith("CorrectSlot("):
+    #             # Extract object name and expected slot
+    #             inside = pred[len("CorrectSlot("):-1]
+    #             obj_name, expected_slot = [s.strip() for s in inside.split(",")]
+
+    #             correct_slot_pred = f"CorrectSlot({obj_name}, {expected_slot})"
+    #             stable_pred = f"IsStable({obj_name})"
+
+    #             correct_slot = state_dict.get(correct_slot_pred, False)
+
+    #             # Determine if the correct slot is full
+    #             if not correct_slot:
+    #                 if expected_slot == 'plate' and not top_rack_has_space:
+    #                     continue  # skip object
+    #                 elif expected_slot == 'cup' and not bottom_rack_has_space:
+    #                     continue  # skip object
+
+    #             # Now count it as a valid object
+    #             valid_objects.append(obj_name)
+
+    #             if correct_slot:
+    #                 is_stable = state_dict.get(stable_pred, False)
+    #                 obj_score = 100 if is_stable else 70  # you can change 70 to any value you want
+    #             else:
+    #                 obj_score = 0
+
+    #             object_scores.append(obj_score)
+
+    #     # Score per-object (weighted evenly)
+    #     if valid_objects:
+    #         total_object_score = sum(object_scores)
+    #         object_score = total_object_score / len(valid_objects)
+    #     else:
+    #         object_score = 0
+
+    #     # Optional: Add global predicates
+    #     global_score = 0
+    #     global_weights = {
+    #         "HasSpace(top_rack)": 7,
+    #         "HasSpace(bottom_rack)": 7,
+    #         "HasSpace(dishwasher)": 6,
+    #     }
+
+    #     for pred, weight in global_weights.items():
+    #         if pred in goal and state_dict.get(pred, False):
+    #             global_score += weight
+
+    #     # Final score
+    #     final_score = object_score * 0.8 + global_score  # 80% object-based, 20% global
+
+    #     return round(final_score, 2)
+
+
+
+
+
 
 
     # def success_score(self, state: np.ndarray, goal_predicates: List[str], all_predicates: List[str]) -> float:
