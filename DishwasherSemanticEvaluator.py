@@ -22,7 +22,7 @@ semantic questions in this file:
 
 """
 
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import numpy as np
 
 class DishwasherSemanticEvaluator:
@@ -328,50 +328,185 @@ class DishwasherSemanticEvaluator:
 
         return np.array(answers, dtype=bool), predicates
 
-    def success_score(self, state: Tuple[np.ndarray, List[str]], goal: List[str]) -> float:
+    def success_score(self, state: Tuple[np.ndarray, List[str]], goal: Dict[str, bool]) -> float:
         """
         Computes a success score (0–100) based only on the provided `state` and `goal`.
         Logic:
         - If object in goal is missing in state → 0 (with warning)
         - If object in correct slot but not stable → 70
         - If object in correct slot and stable → 100
-        - Else → 0
+        - If object is NOT in correct slot:
+            - If the relevant rack has no space → 25
+            - Else → 0
         """
         answers, predicates = state
         state_dict = dict(zip(predicates, answers))
-
         scores = []
 
-        for pred in goal:
-            if not pred.startswith("CorrectSlot("):
-                continue  # Only process CorrectSlot goals
-            if goal[pred] is not True:
-                continue  # Skip 'False' goals
+        for pred, required_value in goal.items():
+            if not pred.startswith("CorrectSlot(") or required_value is not True:
+                continue  # Only process positive CorrectSlot goals
 
             inside = pred[len("CorrectSlot("):-1]
             obj_name, expected_slot = [s.strip() for s in inside.split(",")]
 
             correct_slot_key = f"CorrectSlot({obj_name}, {expected_slot})"
             stable_key = f"IsStable({obj_name})"
+            has_space_key = None
 
+            # Map slot type to dishwasher space check
+            if expected_slot == "cup":
+                has_space_key = "HasSpace(cup_rack)"
+            elif expected_slot == "plate":
+                has_space_key = "HasSpace(top_rack)"
+            elif expected_slot == "skom":
+                has_space_key = "HasSpace(utensil_rack)"
+
+            # Check if the item is in the correct slot
             if correct_slot_key not in state_dict:
                 print(f"⚠️  {correct_slot_key} not found in state — assigning score 0")
                 scores.append(0)
                 continue
 
-            if not state_dict[correct_slot_key]:  # Not in correct slot
-                scores.append(0)
+            if not state_dict[correct_slot_key]:
+                # Check if slot is full
+                if has_space_key and has_space_key in state_dict and not state_dict[has_space_key]:
+                    # No space → give partial score
+                    scores.append(25)
+                else:
+                    scores.append(0)
                 continue
 
-            # In correct slot, now check stability
+            # In correct slot — check if stable
             stable = state_dict.get(stable_key, False)
             score = 100 if stable else 70
             scores.append(score)
 
-        if not scores:
-            return 0.0
+        return round(sum(scores) / len(scores), 2) if scores else 0.0
 
-        return round(sum(scores) / len(scores), 2)
+
+    # def success_score(self, state: Tuple[np.ndarray, List[str]], goal: Dict[str, bool]) -> float:
+    #     """
+    #     Computes a success score (0–100) based only on the provided `state` and `goal`.
+    #     Logic:
+    #     - If object in goal is missing in state → 0 (with warning)
+    #     - If object in correct slot but not stable → 70
+    #     - If object in correct slot and stable → 100
+    #     - Else → 0
+    #     """
+    #     answers, predicates = state
+    #     state_dict = dict(zip(predicates, answers))
+
+    #     scores = []
+
+    #     for pred, required_value in goal.items():
+    #         if not pred.startswith("CorrectSlot(") or required_value is not True:
+    #             continue  # Only process positive CorrectSlot goals
+
+    #         inside = pred[len("CorrectSlot("):-1]
+    #         obj_name, expected_slot = [s.strip() for s in inside.split(",")]
+
+    #         correct_slot_key = f"CorrectSlot({obj_name}, {expected_slot})"
+    #         stable_key = f"IsStable({obj_name})"
+
+    #         if correct_slot_key not in state_dict:
+    #             print(f"⚠️  {correct_slot_key} not found in state — assigning score 0")
+    #             scores.append(0)
+    #             continue
+
+    #         if not state_dict[correct_slot_key]:
+    #             scores.append(0)
+    #             continue
+
+    #         # In correct slot, now check stability
+    #         stable = state_dict.get(stable_key, False)
+    #         score = 100 if stable else 70
+    #         scores.append(score)
+
+    #     return round(sum(scores) / len(scores), 2) if scores else 0.0
+
+
+
+
+
+
+
+
+
+
+#######the old one
+###
+    # def success_score(self, state: Tuple[np.ndarray, List[str]], goal: List[str]) -> float:
+    #     """
+    #     Computes a success score (0–100) based only on the provided `state` and `goal`.
+    #     Logic:
+    #     - If object in goal is missing in state → 0 (with warning)
+    #     - If object in correct slot but not stable → 70
+    #     - If object in correct slot and stable → 100
+    #     - Else → 0
+    #     """
+    #     answers, predicates = state
+    #     state_dict = dict(zip(predicates, answers))
+
+    #     scores = []
+
+    #     for pred in goal:
+    #         if not pred.startswith("CorrectSlot("):
+    #             continue  # Only process CorrectSlot goals
+    #         if goal[pred] is not True:
+    #             continue  # Skip 'False' goals
+
+    #         inside = pred[len("CorrectSlot("):-1]
+    #         obj_name, expected_slot = [s.strip() for s in inside.split(",")]
+
+    #         correct_slot_key = f"CorrectSlot({obj_name}, {expected_slot})"
+    #         stable_key = f"IsStable({obj_name})"
+
+    #         if correct_slot_key not in state_dict:
+    #             print(f"⚠️  {correct_slot_key} not found in state — assigning score 0")
+    #             scores.append(0)
+    #             continue
+
+    #         if not state_dict[correct_slot_key]:  # Not in correct slot
+    #             #if there is no space in the correct slot based on the state, give 25%
+    #             #["HasSpace(top_rack)", "HasSpace(cup_rack)", "HasSpace(utensil_rack)"]
+    #             if expected_slot == 'plate' and not state_dict.get("HasSpace(top_rack)", True):
+    #                 scores.append(25)
+    #             elif expected_slot == 'cup' and not state_dict["HasSpace(cup_rack)"]:
+    #                 scores.append(25)
+    #             elif expected_slot == 'skom' and not state_dict["HasSpace(utensil_rack)"]:
+    #                 scores.append(25)
+    #             else:
+    #                 scores.append(0)
+    #             continue
+
+    #         # In correct slot, now check stability
+    #         stable = state_dict.get(stable_key, False)
+    #         score = 100 if stable else 70
+    #         scores.append(score)
+
+    #     if not scores:
+    #         return 0.0
+
+    #     return round(sum(scores) / len(scores), 2)
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

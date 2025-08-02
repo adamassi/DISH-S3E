@@ -17,6 +17,7 @@ env.open_bottom_rack()
 executor.wait(30)
 
 # === Place Initial Objects ===
+# the knife will not set correctly, the cup and the spoon will set correctly
 cup = dishwasher_objects["cups"]["tall_cup_4"]
 spoon = dishwasher_objects["utensils"]["spoon"]
 knife = dishwasher_objects["utensils"]["knife"]
@@ -45,6 +46,7 @@ goal_1 = {
 
 # === Evaluate state and Goal 1 ===
 print("\n=== [STATE] Semantic Evaluation ===")
+print("we expect the knife to be not in the correct slot, and the cup and spoon to be in the correct slot")
 state = evaluator.get_state()
 answers, predicates = state
 for pred, value in zip(predicates, answers):
@@ -56,8 +58,10 @@ print(f"\nSuccess Score: {score_1}/100")
 
 executor.wait(500)
 
+print("\n\n\n")
 
 # === fix the knife ===
+print("=== Fixing the knife ===")
 knife = dishwasher_objects_has_space_down_rack["utensils"]["knife"]
 env.select_body(knife["body"] + "/")
 env.update_object_position_and_rotation(knife["geom"], knife["position"], [0, 0, - math.pi/2])
@@ -67,12 +71,15 @@ state = evaluator.get_state()
 answers, predicates = state
 score_3 = evaluator.success_score(state, goal_1)
 score_1 = evaluator.success_score(state, goal_1)
+print("\n=== [SCORE] Against Goal 1 ===")
 print(f"\nSuccess Score: {score_3}/100")
 
 executor.wait(100)
 
 
 # === Fill Dishwasher ===
+print("\n=== Filling the dishwasher ===")
+print("goal 2: all objects that have space in the dishwasher should be placed correctly and stable")
 cup_dict = {**dishwasher_objects_has_space_down_rack["cups"], **dishwasher_objects_has_space_down_rack["wine_glasses"]}
 cup_names = list(cup_dict.keys())[:evaluator.num_cups_down_rack]
 
@@ -165,6 +172,80 @@ goal_2 = {
 print("\n=== [SCORE] Against Full Goal 2 ===")
 score_2 = evaluator.success_score(state_filled, goal_2)
 print(f"\nSuccess Score: {score_2}/100")
+
+
+
+
+executor.wait(200)
+goal_3 = {
+    "IsObjectGrasped": False,
+    "IsStable(plate)": True,
+    "IsFragile(plate)": True,
+    "CorrectSlot(plate, plate)": False,
+    "IsStable(plate_1)": True,
+    "IsFragile(plate_1)": True,
+    "CorrectSlot(plate_1, plate)": False,
+    "IsStable(knife)": True,
+    "IsFragile(knife)": False,
+    "CorrectSlot(knife, skom)": True,
+    "IsStable(wine_glass)": True,
+    "IsFragile(wine_glass)": True,
+    "CorrectSlot(wine_glass, cup)": True,
+    "IsStable(wine_glass_1)": True,
+    "IsFragile(wine_glass_1)": True,
+    "CorrectSlot(wine_glass_1, cup)": True,
+    "IsStable(wine_glass_2)": True,
+    "IsFragile(wine_glass_2)": True,
+    "CorrectSlot(wine_glass_2, cup)": True,
+    #made wine_glass_3 true!
+    "IsStable(wine_glass_3)": True,
+    "IsFragile(wine_glass_3)": True,
+    "CorrectSlot(wine_glass_3, cup)": True,
+    "IsStable(tall_cup)": True,
+    "IsFragile(tall_cup)": True,
+    "CorrectSlot(tall_cup, cup)": True,
+    "IsStable(tall_cup_1)": True,
+    "IsFragile(tall_cup_1)": True,
+    "CorrectSlot(tall_cup_1, cup)": True,
+    "IsStable(tall_cup_2)": True,
+    "IsFragile(tall_cup_2)": True,
+    "CorrectSlot(tall_cup_2, cup)": True,
+    "IsStable(tall_cup_3)": True,
+    "IsFragile(tall_cup_3)": True,
+    "CorrectSlot(tall_cup_3, cup)": True,
+    "IsStable(tall_cup_4)": True,
+    "IsFragile(tall_cup_4)": True,
+    "CorrectSlot(tall_cup_4, cup)": True,
+    "IsStable(tall_cup_5)": True,
+    "IsFragile(tall_cup_5)": True,
+    "CorrectSlot(tall_cup_5, cup)": True,
+    "IsStable(tall_cup_6)": True,
+    "IsFragile(tall_cup_6)": True,
+    "CorrectSlot(tall_cup_6, cup)": True,
+    "IsStable(tall_cup_7)": True,
+    "IsFragile(tall_cup_7)": True,
+    "CorrectSlot(tall_cup_7, cup)": True,
+    "IsStable(tall_cup_8)": True,
+    "IsFragile(tall_cup_8)": True,
+    "CorrectSlot(tall_cup_8, cup)": True,
+    "IsStable(spoon)": True,
+    "IsFragile(spoon)": False,
+    "CorrectSlot(spoon, skom)": True,
+    "IsStable(spoon_1)": True,
+    "IsFragile(spoon_1)": False,
+    "CorrectSlot(spoon_1, skom)": True,
+    "HasSpace(top_rack)": True,
+    "HasSpace(cup_rack)": False,
+    "HasSpace(utensil_rack)": True
+}
+
+
+# === Evaluate score ===
+print("\n=== [SCORE] Against Full Goal 3 ===")
+print("wine_glass_3 is added to the goal, but there is no enough space for it")
+
+score_3 = evaluator.success_score(state_filled, goal_3)
+print(f"\nSuccess Score: {score_3}/100")
 
 executor.wait(1000)
 
