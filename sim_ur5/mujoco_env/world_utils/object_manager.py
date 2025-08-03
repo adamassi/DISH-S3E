@@ -80,7 +80,8 @@ class ObjectManager:
             # print("randomizing dish positionsCCCCCCCCCCCCCCCCC")
             # randomize dish positions
             dish_positions = []
-            for _ in range(len(self.object_names)):
+            print(self.object_names)
+            for _ in range(7,len(self.object_names)):
                 # generate random position for dish
                 dish_location = [random.uniform(*self.workspace_x_lims), random.uniform(*self.workspace_y_lims), 0.05]
                 # check if dish collides with any other previous new dish position
@@ -89,7 +90,8 @@ class ObjectManager:
                     dish_location = [random.uniform(*self.workspace_x_lims), random.uniform(*self.workspace_y_lims),
                                       0.05]
             # set dishs to new positions
-            self.set_all_dish_positions(dish_positions)
+            dish_positions1=[[-11.5, -0.7, 0.025],[-10.5, -0.7 ,0.025],[-10, -0.7, 0.025],[-9.5, -0.7, 0.025],[-0.2, -0.5, 0.05],[0.6, -0.6,0.8],[0.7, -0.6,0.8]]
+            self.set_all_dish_positions(dish_positions1 + dish_positions)
         else:
             if dish_positions:
                 self.set_all_dish_positions(dish_positions)

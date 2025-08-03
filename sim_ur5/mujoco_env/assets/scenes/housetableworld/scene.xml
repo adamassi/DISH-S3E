@@ -70,9 +70,9 @@
             <freejoint name="dish0_fj"/> <!-- Free joint for movement -->
             <geom type="box" size=".02 .02 .02" material="wood_material"/> <!-- Dish geometry -->
         </body>
-        <body name="dish1" pos="-0.5 -0.7 0.025" quat="0. 0. 1. 0.">
+        <body name="dish1" pos="-10.5 -0.7 0.025" quat="0. 0. 1. 0.">
             <freejoint name="dish1_fj"/>
-            <geom type="box" size=".02 .02 .02" material="wood_material"/>
+            <geom type="box" size=".02 .02 .02" material="wood_material" rgba="1 0 0 1"/> <!-- Red color -->
         </body>
         <body name="dish2" pos="-0.5 -0.6 0.025" quat="0. 0. 1. 0.">
             <freejoint name="dish2_fj"/>

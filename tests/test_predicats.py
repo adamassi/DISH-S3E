@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from sim_ur5.mujoco_env.sim_env import SimEnv
 from sim_ur5.motion_planning.motion_executor import MotionExecutor
 from DishwasherSemanticEvaluator import DishwasherSemanticEvaluator
