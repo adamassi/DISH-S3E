@@ -3,7 +3,7 @@ This repository hosts the **DISH-S3E** project for the AI course (236502) at Tec
 - **Dishwasher Loading**
 - **Battery Sorting and Charging Station**
 
----
+--- 
 
 ## 🚀 Overview
 
