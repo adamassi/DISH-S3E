@@ -1,6 +1,0 @@
-
-housetableworld:
-
-Valid names: ['birdview', 'frontview', 'leftangleview', 'leftsideview',
-'rightangleview', 'rightsideview']"
-#types can i use 

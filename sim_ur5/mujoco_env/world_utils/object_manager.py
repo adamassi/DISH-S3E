@@ -80,7 +80,7 @@ class ObjectManager:
             # print("randomizing dish positionsCCCCCCCCCCCCCCCCC")
             # randomize dish positions
             dish_positions = []
-            print(self.object_names)
+            # print(self.object_names)
             for _ in range(7,len(self.object_names)):
                 # generate random position for dish
                 dish_location = [random.uniform(*self.workspace_x_lims), random.uniform(*self.workspace_y_lims), 0.05]

@@ -27,26 +27,17 @@ py -3.10 -m venv venv
 2
 .\venv\Scripts\Activate
 3
-python setup.py 
+pip install -r requirements.txt
+
+slect interpreter to be 3.10 (venv)
+ 
+if mac:
+python3.10 -m venv venv  
+source venv/bin/activate 
+pip install -r requirements.txt
+mjpython -m "name_the_file".py 
 
 
-
-//////
-test for change object location
-python test.py
-
-test for the noraml
-python test_for_noraml.py
-
-python sim_testing.py
-
-
-
-
-python stam3.py
-
-
-python convert.py
 
 
 
@@ -79,8 +70,3 @@ python convert.py
 
 
 
-#firas
-python3.11 -m venv venv  
-source venv/bin/activate 
-pip install -r requirements.txt
-mjpython -m sim_testing.py 
