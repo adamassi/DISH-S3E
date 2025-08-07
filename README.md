@@ -110,7 +110,7 @@ sim_ur5/
 
 Each domain includes:
 - `get_state()` — returns current semantic state (vector + predicates)
-- `success_score(state, goal, predicates)` — returns float score from 0.0 to 1.0
+- `success_score(state, goal, predicates)` 
 
 These allow automated benchmarking of semantic success.
 
